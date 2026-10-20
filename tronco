@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tronco Hueco (Tanque) - Probador de IA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    h1 { margin-bottom: 5px; color: #f97316; text-align: center; }
+    p { margin-bottom: 15px; color: #94a3b8; text-align: center; }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      max-width: 740px;
+      width: 100%;
+    }
+    canvas {
+      background: #050b14;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      cursor: crosshair;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+      width: 100%;
+    }
+    button {
+      background: #ea580c;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover { background: #c2410c; transform: translateY(-2px); }
+    button.defend { background: #475569; }
+    button.defend:hover { background: #334155; }
+    button.enrage { background: #dc2626; }
+    button.enrage:hover { background: #b91c1c; }
+    .info {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 6px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tronco Hueco - Guardia Pesado (Enemigo 3/4)</h1>
+  <p>Mueve el ratón para posicionar al jugador. Prueba los ataques pesados del tanque.</p>
+
+  <div class="container">
+    <canvas id="gameCanvas" width="700" height="480"></canvas>
+    
+    <div class="controls">
+      <button onclick="tronco.pisotónTerrestre()">1. Pisotón AoE</button>
+      <button onclick="tronco.embestida(player)">2. Carga Pesada</button>
+      <button class="defend" onclick="tronco.alternarPostura()">3. Postura Escudo</button>
+      <button class="enrage" onclick="tronco.activarFuria()">4. Modo Furia</button>
+    </div>
+
+    <div class="info">
+      <strong>Comportamiento del Tronco Hueco:</strong><br>
+      - <em>Bloqueo Frontal:</em> Si está en postura defensiva, absorbe casi todo el daño frontal.<br>
+      - <em>Onda de Choque:</em> El pisotón crea un anillo en el suelo que daña al jugador si no se aleja.<br>
+      - <em>Enrage (<30% HP):</em> Se enciende en llamas y sus ataques ganan velocidad y fuerza.
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Jugador que sigue el cursor
+    const player = { x: 500, y: 240, radius: 14, color: '#38bdf8' };
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      player.x = e.clientX - rect.left;
+      player.y = e.clientY - rect.top;
+    });
+
+    // Clase Principal: Tronco Hueco
+    class TroncoHueco {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 38;
+        this.angle = 0;
+        this.hp = 200;
+        this.maxHp = 200;
+        this.isDefending = false;
+        this.isEnraged = false;
+        this.isCharging = false;
+        this.chargeVx = 0;
+        this.chargeVy = 0;
+        this.shockwaves = [];
+        this.particles = [];
+      }
+
+      update(target) {
+        // Orientación hacia el jugador
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (!this.isCharging) {
+          this.angle = Math.atan2(dy, dx);
+          
+          // Movimiento lento de avance
+          const speed = this.isEnraged ? 1.6 : 0.8;
+          if (dist > 80 && !this.isDefending) {
+            this.x += Math.cos(this.angle) * speed;
+            this.y += Math.sin(this.angle) * speed;
+          }
+        } else {
+          // Lógica de embestida
+          this.x += this.chargeVx;
+          this.y += this.chargeVy;
+          this.chargeVx *= 0.96;
+          this.chargeVy *= 0.96;
+
+          if (Math.hypot(this.chargeVx, this.chargeVy) < 0.5) {
+            this.isCharging = false;
+          }
+        }
+
+        // Actualizar ondas de choque (Pisotón)
+        for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+          const sw = this.shockwaves[i];
+          sw.r += 3.5;
+          sw.alpha -= 0.02;
+          if (sw.alpha <= 0) this.shockwaves.splice(i, 1);
+        }
+
+        // Partículas de furia/fuego
+        if (this.isEnraged && Math.random() < 0.4) {
+          this.particles.push({
+            x: this.x + (Math.random() - 0.5) * 40,
+            y: this.y + (Math.random() - 0.5) * 40,
+            r: Math.random() * 4 + 2,
+            alpha: 1
+          });
+        }
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.y -= 1;
+          p.alpha -= 0.03;
+          if (p.alpha <= 0) this.particles.splice(i, 1);
+        }
+      }
+
+      // HABILIDAD 1: Pisotón Terrestre
+      pisotónTerrestre() {
+        this.shockwaves.push({
+          x: this.x,
+          y: this.y,
+          r: 10,
+          maxR: 110,
+          alpha: 1.0
+        });
+      }
+
+      // HABILIDAD 2: Embestida Pesada
+      embestida(target) {
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const angle = Math.atan2(dy, dx);
+        
+        const force = this.isEnraged ? 14 : 9;
+        this.chargeVx = Math.cos(angle) * force;
+        this.chargeVy = Math.sin(angle) * force;
+        this.isCharging = true;
+      }
+
+      // HABILIDAD 3: Cambiar Postura Escudo
+      alternarPostura() {
+        this.isDefending = !this.isDefending;
+      }
+
+      // HABILIDAD 4: Activar Modo Furia
+      activarFuria() {
+        this.isEnraged = true;
+        this.hp = Math.min(this.hp, 60); // Simula vida baja
+      }
+
+      draw(ctx) {
+        // Dibujar Partículas de Furia
+        this.particles.forEach(p => {
+          ctx.fillStyle = `rgba(239, 68, 68, ${p.alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Dibujar Ondas de Choque
+        this.shockwaves.forEach(sw => {
+          ctx.strokeStyle = `rgba(249, 115, 22, ${sw.alpha})`;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        // Cuerpo Principal (Madera Oscura)
+        ctx.fillStyle = this.isEnraged ? '#7f1d1d' : '#271c19';
+        ctx.strokeStyle = this.isEnraged ? '#ef4444' : '#78350f';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Núcleo Hueco (Fuego Fatuo Interior)
+        ctx.fillStyle = this.isEnraged ? '#f97316' : '#eab308';
+        ctx.shadowColor = this.isEnraged ? '#ef4444' : '#f59e0b';
+        ctx.shadowBlur = 15;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Escudo de Madera (Si está defendiendo)
+        if (this.isDefending) {
+          ctx.strokeStyle = '#a16207';
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius + 6, this.angle - 0.8, this.angle + 0.8);
+          ctx.stroke();
+        }
+      }
+    }
+
+    const tronco = new TroncoHueco(200, 240);
+
+    // Bucle Principal
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Dibujar Jugador
+      ctx.fillStyle = player.color;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Actualizar y Dibujar Tronco Hueco
+      tronco.update(player);
+      tronco.draw(ctx);
+
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>

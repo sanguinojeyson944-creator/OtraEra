@@ -1,0 +1,405 @@
+PROMPT MAESTRO — ANÁLISIS, ADAPTACIÓN Y CREACIÓN DE LOS CAPÍTULOS I Y II DE WALPIRA
+
+1.ROL Y OBJETIVO PRINCIPAL
+
+Actúa como director técnico de videojuegos, diseñador narrativo, diseñador de misiones, analista de sistemas RPG y desarrollador experto en la arquitectura actual de este proyecto.
+
+Tu tarea es analizar integralmente el juego existente, comprender su estructura y construir una versión coherente de los capítulos I y II de la historia principal de Walpira, utilizando como referencia funcional y estructural la información proporcionada sobre Arcuz: Behind the Dark, pero adaptando todos sus elementos al universo, los personajes, los objetos, los mapas, los sistemas y la identidad propia de Walpira.
+
+No debes copiar Arcuz directamente ni crear una implementación independiente que ignore el proyecto actual. Debes estudiar lo que ya existe, determinar qué sistemas se pueden reutilizar, establecer las equivalencias necesarias y ejecutar los cambios sobre la arquitectura real del juego.
+
+El resultado debe ser una historia principal jugable, conectada, guiada, persistente y funcional desde el comienzo de una partida hasta la conclusión del capítulo II.
+
+La historia principal de Walpira tendrá prioridad sobre los tutoriales, las misiones secundarias, las actividades opcionales y cualquier otro sistema narrativo existente. No debes eliminar contenido previo que sea compatible con esta prioridad.
+
+2.PRIMERA FASE OBLIGATORIA: AUDITAR TODO EL PROYECTO
+
+Antes de modificar código, escenas, mapas, personajes, inventarios o misiones, analiza el estado real del proyecto.
+
+Inspecciona, según las posibilidades de la arquitectura existente:
+
+- Estructura de archivos, módulos, escenas, componentes y sistemas.
+- Personaje controlado por el jugador, movimiento, cámara, combate y estadísticas.
+- NPC existentes, nombres, diálogos, ubicaciones, rotaciones e interacciones.
+- Mercaderes, tiendas, inventarios comerciales y sistemas de compra y venta.
+- Herreros, forjadores, alquimistas y sistemas de composición o mejora.
+- Inventario del jugador, equipamiento, armas, armaduras, consumibles y objetos de misión.
+- Enemigos o mobs, niveles, zonas de aparición, IA, tablas de botín y objetos soltados.
+- Mapas, caminos, puertas, portales, aldeas, bosques, mazmorras y puntos de interés.
+- Sistema de misiones, objetivos, prerrequisitos, recompensas, seguimiento y persistencia.
+- Interfaz de usuario, paneles, mensajes, marcadores, flechas de navegación, sonidos y efectos.
+- Sistema de guardado, carga, progreso de capítulos y estado de las misiones.
+- Sistemas existentes de tutorial, entrenamiento, pausa, opciones y comienzo de partida.
+
+No supongas que una función existe porque su nombre aparezca en un archivo. Comprueba cómo funciona y cómo se conecta con los demás sistemas.
+
+No reconstruyas desde cero sistemas que ya funcionan. Extiende o corrige los existentes y conserva la compatibilidad con las funciones avanzadas del juego.
+
+Feedback obligatorio de la auditoría
+
+Antes de ejecutar cambios estructurales importantes, presenta un informe con:
+
+1. Sistemas existentes que pueden reutilizarse.
+2. Sistemas incompletos, defectuosos o desconectados.
+3. Personajes disponibles y sus funciones actuales.
+4. Comerciantes identificados y mercancías que realmente venden.
+5. Objetos existentes que podrían utilizarse en las misiones.
+6. Objetos, enemigos, zonas, diálogos o sistemas que faltan.
+7. Conflictos con las misiones, la progresión o los contenidos actuales.
+8. Propuesta de adaptación de Arcuz al universo de Walpira.
+9. Plan de implementación por etapas.
+10. Riesgos técnicos y pruebas necesarias.
+
+No detengas el trabajo después de entregar el informe. Continúa con la implementación siguiendo el plan, salvo que exista una decisión verdaderamente bloqueante que requiera mi aprobación.
+
+3.SEGUNDA FASE: CONSTRUIR EL CONCEPTO OFICIAL DE WALPIRA
+
+Analiza la información que ya existe en el proyecto y establece un concepto narrativo y jugable consistente para Walpira.
+
+Debes definir, utilizando primero los elementos ya existentes:
+
+- Premisa del mundo y situación inicial.
+- Identidad del protagonista y su papel en la historia.
+- Motivo por el que debe comenzar la aventura.
+- Conflicto que desencadena el capítulo I.
+- Amenaza que conecta los capítulos I y II.
+- Identidad y función de la villa inicial.
+- Papel de los habitantes y personajes relevantes.
+- Relación entre la villa, las zonas exteriores, los bosques y las áreas peligrosas.
+- Motivaciones de los NPC principales.
+- Enemigos que habitan cada región y su relación con la historia.
+- Progresión narrativa, mecánica y de dificultad.
+- Objetivo final del capítulo II y gancho narrativo para el capítulo III.
+
+No inventes arbitrariamente una historia que contradiga la narrativa, los nombres, la geografía o las mecánicas existentes. Si necesitas incorporar elementos nuevos, justifica su función y relación con el canon del proyecto.
+
+Equivalencia narrativa
+
+Usa Arcuz como referencia de estructura y diseño de progresión, no como contenido que deba copiarse literalmente.
+
+Debes transformar los conceptos de referencia en conceptos originales de Walpira:
+
+- Arcuz → identidad y mundo propios de Walpira.
+- Wayne → equivalente funcional de Walpira, si el proyecto cuenta con un personaje apropiado.
+- Gran → herrero o responsable de armas y equipo, si corresponde.
+- Susan → alquimista, comerciante de consumibles o responsable de composición, según los sistemas existentes.
+- Kimura → equivalente funcional relacionado con exploración, caza o combate.
+- Anna → personaje asociado a una misión personal o secundaria.
+- Chung → comerciante relacionado con economía, mercancías o encargos.
+- Paul → personaje que pueda conducir la progresión hacia desafíos y misiones de combate.
+- Zack → figura relacionada con el misterio principal, únicamente si esa función encaja con la historia de Walpira.
+
+Estos nombres son referencias de análisis, no instrucciones para introducirlos literalmente en el juego.
+
+No asignes equivalencias por semejanza superficial de nombres. Evalúa la función narrativa, los servicios que ofrece el NPC, su ubicación, sus diálogos y sus sistemas asociados.
+
+Si no existe un equivalente adecuado, informa de la ausencia y propone crear un personaje nuevo con identidad propia de Walpira. Evita duplicar NPC que cumplan la misma función.
+
+4.TERCERA FASE: MATRIZ DE EQUIVALENCIAS ENTRE ARCuz Y WALPIRA
+
+Crea una matriz de equivalencias antes de diseñar las misiones definitivas.
+
+Incluye, como mínimo, las siguientes columnas:
+
+Campo| Información requerida
+Referencia de Arcuz| Personaje, objeto, enemigo, zona o sistema de referencia.
+Función original| Qué hace y para qué sirve en la progresión.
+Equivalente de Walpira| Nombre real encontrado o nombre propuesto.
+Existencia actual| Existente, incompleto o inexistente.
+Recurso asociado| Archivo, entidad, inventario, escena o sistema que lo implementa.
+Acción necesaria| Reutilizar, adaptar, corregir, reubicar o crear.
+Dependencias| Misiones, objetos, enemigos o sistemas relacionados.
+Validación| Cómo se comprobará que funciona.
+
+Incluye equivalencias para:
+
+- Todos los NPC que intervengan en los capítulos I y II.
+- Armas iniciales y equipamiento.
+- Armaduras y escudos, si existen en el sistema actual.
+- Pociones de vida y maná, u otros consumibles disponibles.
+- Cristales, piedras de composición y materiales de mejora.
+- Objetos especiales necesarios para misiones.
+- Objetos recogidos de enemigos.
+- Monedas y recompensas.
+- Enemigos normales, enemigos de misión y jefes.
+- Mapas, zonas, puntos de aparición y rutas de navegación.
+- Indicadores, sonidos, mensajes y sistemas de seguimiento.
+
+La matriz debe reflejar el estado real del juego, no suposiciones.
+
+5.CUARTA FASE: AUDITAR MERCADERES, INVENTARIOS Y OBJETOS DE MISIÓN
+
+Esta fase es crítica. Debes comprobar qué personaje vende cada clase de objeto y qué artículos existen realmente en el juego.
+
+Clasificación de comerciantes
+
+Identifica y documenta:
+
+1. Comerciante de armas.
+2. Comerciante de armaduras y escudos.
+3. Comerciante de pociones y consumibles.
+4. Herrero o forjador.
+5. Alquimista o responsable de composición.
+6. Comerciante general.
+7. Otros NPC que vendan, intercambien, fabriquen o entreguen objetos.
+
+Un mismo NPC puede desempeñar varias funciones si el sistema actual lo permite y resulta coherente. No crees vendedores redundantes sin necesidad.
+
+Para cada comerciante, informa de:
+
+- Nombre y ubicación.
+- Funciones actuales.
+- Catálogo real de artículos.
+- Precios y requisitos.
+- Artículos que faltan para las misiones.
+- Artículos que deben añadirse.
+- Compatibilidad con el inventario y la economía actuales.
+
+Equivalencia de objetos
+
+Cuando una misión de referencia necesite un arma, poción, material, cristal, piedra, llave, carta, mercancía, alimento, objeto personal u otro elemento, debes buscar primero el equivalente en el inventario y en los datos reales del juego.
+
+Aplica estas reglas:
+
+Caso A: el objeto ya existe. Reutilízalo si su función, propiedades y comportamiento son adecuados. No crees otro artículo que duplique el existente.
+
+Caso B: existe un objeto similar, pero no sirve directamente. Determina si puede adaptarse sin romper otras misiones, recetas, estadísticas o equipamientos.
+
+Caso C: el objeto no existe. Informa de que falta y propón un objeto nuevo con nombre propio de Walpira, descripción, icono o representación visual, tipo, función, requisitos, valor económico y comportamiento.
+
+Caso D: el objeto debe obtenerse de un enemigo. Incorpóralo a la tabla de botín correcta y verifica que la misión detecte su recogida.
+
+Caso E: el objeto debe comprarse, fabricarse o entregarse por un NPC. Implementa la interacción correspondiente y valida que la misión no pueda completarse mediante una acción incorrecta.
+
+No declares que un objeto está implementado hasta verificar su existencia y comportamiento. No crees referencias a identificadores inexistentes.
+
+6.QUINTA FASE: IMPLEMENTAR LA HISTORIA PRINCIPAL DE WALPIRA
+
+Implementa los capítulos I y II como la línea narrativa principal del juego.
+
+La estructura de referencia que debes adaptar comprende:
+
+Capítulo I — Inicio, equipamiento y preparación
+
+1. Presentación del protagonista y de la situación inicial.
+2. Introducción a la villa y al NPC que dirige los primeros pasos.
+3. Primer encargo relacionado con la obtención y equipamiento de un arma.
+4. Primer combate contra enemigos básicos.
+5. Encargo de eliminación de una cantidad específica de enemigos.
+6. Introducción al sistema de experiencia, subida de nivel y distribución de atributos o habilidades.
+7. Introducción a la composición, fabricación o mejora de equipo, siempre que el sistema existente lo permita.
+8. Conclusión del capítulo mediante una misión de entrega o un acontecimiento narrativo.
+9. Desbloqueo del capítulo II.
+
+Capítulo II — Exploración, nuevas amenazas y encargos
+
+1. Presentación de nuevas zonas y enemigos.
+2. Misión de combate contra enemigos más peligrosos.
+3. Encargo relacionado con un material o recurso especial.
+4. Exploración de un bosque o región equivalente existente en Walpira.
+5. Introducción de nuevas mecánicas o materiales solo cuando sean necesarias.
+6. Incorporación de misiones secundarias coherentes con los habitantes.
+7. Progresión de la amenaza principal.
+8. Cierre del capítulo con una misión que confirme el avance de la historia.
+9. Preparación narrativa para el capítulo III sin implementarlo todavía como parte de este alcance.
+
+Esta estructura es una guía de adaptación. No tienes que conservar literalmente los títulos, personajes, nombres, cantidades ni lugares de Arcuz.
+
+Adapta los objetivos a la dificultad, el equipamiento, los enemigos y el mapa real de Walpira. Si una misión requiere un sistema inexistente, resuélvelo mediante la arquitectura actual o informa de la dependencia que debe crearse.
+
+Cada misión debe tener una ficha completa
+
+Para todas las misiones principales y secundarias que implementes, define:
+
+- ID único y estable.
+- Nombre original de Walpira.
+- Capítulo al que pertenece.
+- NPC que la entrega.
+- Tipo: principal, secundaria o tutorial.
+- Descripción narrativa.
+- Objetivo visible para el jugador.
+- Prerrequisitos.
+- Zona y ubicación de destino.
+- NPC, enemigos u objetos involucrados.
+- Condición exacta de inicio.
+- Condición verificable de progreso.
+- Condición exacta de finalización.
+- Entrega y diálogo de cierre.
+- Recompensas.
+- Sonidos y mensajes asociados.
+- Siguiente misión o contenido desbloqueado.
+- Comportamiento al guardar y cargar la partida.
+- Condiciones de fallo, repetición o recuperación, cuando correspondan.
+
+La historia principal debe tener una cadena de dependencias coherente. No permitas que el jugador complete una misión posterior antes de cumplir los requisitos de la anterior.
+
+7.PRIORIDAD ABSOLUTA: LA HISTORIA PRINCIPAL DEBE GUIAR AL JUGADOR
+
+El jugador nunca debe quedarse sin saber qué hacer a continuación.
+
+Implementa o adapta un sistema de seguimiento de misiones con prioridad para la historia principal.
+
+Debe mostrar:
+
+- Nombre del capítulo actual.
+- Nombre de la misión principal activa.
+- Objetivo actual.
+- Acción concreta que debe realizar el jugador.
+- NPC con quien debe hablar, cuando corresponda.
+- Zona de destino.
+- Cantidad de enemigos eliminados, si es un objetivo cuantificable.
+- Objetos recogidos y cantidades necesarias, si corresponde.
+- Próximo paso después de completar cada objetivo.
+
+Flecha guía y navegación
+
+Implementa una flecha o marcador que conduzca al jugador hacia el objetivo principal activo.
+
+Debe:
+
+- Apuntar al NPC, enemigo, objeto, entrada o zona correspondiente.
+- Actualizarse al cambiar de objetivo.
+- Mantenerse sincronizado con el estado real de la misión.
+- Respetar la posición y orientación de los elementos del mundo.
+- Evitar apuntar a objetivos que ya se completaron.
+- Cambiar de destino al iniciar una nueva etapa.
+- Utilizar un indicador de borde de pantalla si el objetivo está fuera de la vista, cuando la interfaz lo permita.
+- Aprovechar el mapa existente para marcar el destino.
+- Diferenciarse visualmente de los marcadores secundarios.
+
+Si el objetivo es derrotar a varios enemigos, guía al jugador hacia la zona de combate y muestra el progreso. Si debe hablar con un NPC, dirige la flecha hacia ese personaje. Si debe recoger un objeto, marca su ubicación o la zona en la que puede obtenerse.
+
+No implementes una flecha puramente decorativa: debe estar conectada al estado real de la misión.
+
+Indicadores de NPC
+
+Define una convención visual coherente para:
+
+- Misión disponible.
+- Misión principal activa.
+- Misión secundaria disponible.
+- Misión completada pendiente de entrega.
+- NPC sin interacción relevante para el jugador.
+
+Utiliza los indicadores que ya existan cuando sean funcionales. Si debes crear otros, hazlo de manera consistente y evita que se superpongan con nombres, barras de vida u otros elementos.
+
+8.INICIO DE PARTIDA: TUTORIAL OPCIONAL Y CAMPO DE ENTRENAMIENTO
+
+El comienzo de una partida nueva debe presentar una decisión clara.
+
+Después de iniciar una nueva partida, muestra una pregunta breve en español:
+
+«¿Deseas realizar el tutorial de entrenamiento antes de comenzar la aventura?»
+
+Opciones:
+
+- Sí, quiero entrenar.
+- No, comenzar aventura.
+
+Si el jugador elige entrenar
+
+Crea o adapta un campo de entrenamiento separado de la villa y de la historia principal.
+
+Debe tener:
+
+- Una zona claramente delimitada.
+- Un instructor o guía, si resulta necesario.
+- Indicaciones para moverse y controlar al personaje.
+- Introducción al combate básico.
+- Prueba de ataque y esquiva, si estas mecánicas existen.
+- Prueba de equipamiento o inventario cuando corresponda.
+- Instrucciones breves y progresivas.
+- Finalización clara del entrenamiento.
+- Una opción para salir o continuar cuando sea apropiado.
+
+El campo de entrenamiento no debe modificar indebidamente el progreso de las misiones principales ni obligar al jugador a repetir el tutorial.
+
+Al terminarlo, lleva al jugador a la villa inicial y comienza el capítulo I.
+
+Si el jugador rechaza el tutorial
+
+Llévalo directamente a la villa normal e inicia el capítulo I. No lo envíes al campo de entrenamiento ni le exijas completar las pruebas tutoriales.
+
+En ambos casos, la historia principal debe comenzar de forma inequívoca.
+
+9.PRESENTACIÓN DEL CAPÍTULO I Y CAPÍTULO II
+
+Al iniciar cada capítulo, muestra una presentación visual breve:
+
+- Nombre del capítulo.
+- Título narrativo.
+- Introducción contextual.
+- Misión principal inicial.
+- Primer objetivo y NPC relevante.
+
+Por ejemplo, el formato visual puede ser:
+
+CAPÍTULO I — [TÍTULO ORIGINAL DE WALPIRA]
+
+Una breve introducción narrativa.
+
+Objetivo principal: hablar con [NPC correspondiente].
+
+Siguiente paso: [instrucción concreta].
+
+Los nombres entre corchetes son campos que debes sustituir con los nombres reales o definidos para Walpira. No deben aparecer literalmente en la interfaz final.
+
+Después de la presentación, muestra las instrucciones en el panel de misiones o en el HUD, sin tapar al protagonista ni los elementos esenciales de la pantalla.
+
+No repitas la introducción cada vez que el jugador cargue una partida guardada. Conserva el estado de presentación y el progreso del capítulo.
+
+10.NPC: UBICACIÓN, VISIBILIDAD Y ORIENTACIÓN
+
+Todos los NPC relacionados con las misiones de los capítulos I y II deben estar ubicados de forma intencional.
+
+Antes de reubicar o crear un NPC:
+
+1. Analiza la distribución del mapa.
+2. Identifica casas, paredes, árboles, estructuras y obstáculos.
+3. Comprueba las rutas de acceso del jugador.
+4. Determina la posición más visible y funcional.
+5. Verifica que el personaje no quede oculto por edificios u objetos.
+6. Comprueba que no aparezca dentro del terreno, fuera de los caminos o en zonas inaccesibles.
+7. Ajusta su rotación para que mire hacia la fuente de interés correspondiente.
+
+La orientación debe ser contextual:
+
+- El comerciante debe mirar hacia la zona de atención al jugador.
+- El herrero debe mirar hacia el área donde se realiza la interacción.
+- El instructor debe mirar hacia el jugador o hacia la zona de entrenamiento.
+- Los NPC que vigilan una entrada deben mirar hacia el acceso relevante.
+- Los NPC que esperan al jugador deben tener una orientación coherente con el lugar donde este se aproxima.
+
+No fijes una rotación arbitraria común a todos los NPC. Calcula la dirección según la geometría real del entorno y utiliza el sistema de orientación que emplee el proyecto.
+
+Si el motor utiliza un sistema de coordenadas específico, respétalo. No supongas ejes, convenciones de rotación ni nombres de componentes sin inspeccionar el código.
+
+Comprueba las ubicaciones tanto desde la perspectiva del jugador como durante la navegación y las interacciones.
+
+11.ENEMIGOS, BOTÍN Y OBJETOS DE MISIÓN
+
+Todos los enemigos que participen en los capítulos I y II deben estar integrados con el sistema de combate, las misiones y el inventario.
+
+Para cada tipo de enemigo, determina:
+
+- Nombre y función narrativa.
+- Zona de aparición.
+- Nivel y dificultad.
+- Vida, daño y comportamiento según los sistemas existentes.
+- Recompensa de experiencia.
+- Oro u otros recursos, cuando corresponda.
+- Tabla de botín.
+- Objetos útiles para el jugador.
+- Objetos específicos para misiones.
+- Condiciones de aparición y reaparición.
+
+Reglas del botín
+
+1. Reutiliza las tablas de botín existentes cuando sean adecuadas.
+2. No hagas que todos los enemigos suelten objetos en cada derrota si el balance no lo justifica.
+3. Configura probabilidades coherentes para el botín común y los objetos especiales.
+4. Los objetos requeridos para misiones deben tener una probabilidad y un método de obtención que permitan completar el encargo razonablemente.
+5. Si una misión necesita un material concreto, identifica qué enemigo o fuente lo entrega.
+6. Comprueba que la recogida actualiza inmediatamente el progreso.
+7. Evita que los objetos de misión desaparezcan sin posibilidad de recuperación.
+8. Impide que un ene

@@ -1,0 +1,130 @@
+ESTADO DE IMPLEMENTACION: 19-10-2026
+Leyenda: ------ LISTO = implementado en codigo; [PARCIAL] = existe una parte, falta cerrar o probar; [PENDIENTE] = no esta implementado o no esta conectado.
+
+1. Colisiones del bosque
+- Choza, cercas y estructuras deben detener al jugador, NPCs, enemigos y proyectiles. [PARCIAL]
+
+2. Tribu, casa e historia
+- Drama, accion, dialogos y cinematica inicial de Kaelen con su madre. [PARCIAL]
+- Casa familiar detallada y espacios amplios. [PARCIAL]
+- Suelo de barro en el asentamiento tribal. [PARCIAL]
+- Investigar referencias culturales y mejorar los detalles del asentamiento. [PENDIENTE]
+- NPCs autonomos que recorran el campamento. [PARCIAL]
+- Interaccion directa con NPCs mediante el control de accion. [PARCIAL]
+- Murmullos al pasar cerca de NPCs. [PARCIAL]
+- Dialogos y murmullos en idioma Nairu, con traduccion legible. [PARCIAL]
+
+3. Dash disponible desde el principio
+------ LISTO
+
+4. Musica de tambores para el bosque inicial
+------ LISTO
+
+5. Comerciantes e items de la tribu
+- NPC comerciante de remedios e items de pocion. ------ LISTO
+- NPC comerciante de armas basicas; catalogo con lanza, espada de hierro, arco y flechas. [PARCIAL]
+- Comprobar que arco y flechas se equipan, apuntan y disparan correctamente. [PENDIENTE]
+
+5.1 Camara, apuntado y narrativa
+- Acercar y validar la camara de tercera persona. [PARCIAL]
+- Fijado manual: no seleccionar objetivos sin linea de vision y no girar la camara por amenazas cercanas. [PARCIAL]
+- Al apuntar, mostrar punto de mira centrado. [PARCIAL]
+- Dibujar trayectoria y comunicar fuerza/carga del lanzamiento. [PARCIAL]
+- Usar el mismo esquema de apuntado para arco y flechas. [PENDIENTE]
+- Mejorar la progresion narrativa para guiar al jugador por el mundo. [PARCIAL]
+
+ADICIONALES, IMPLEMENTAR
+Prioridad P0 - bloquear y apuntar
+1. Completar colisiones: mover jugador, NPCs y enemigos sin atravesar chozas/cercas; bloquear los proyectiles contra esas mismas superficies, considerando altura y trayectoria.
+2. Implementar apuntado real: reticula, trayectoria predictiva, carga y lanzamiento de espada conectados; falta probar trayectoria/colisiones en partida y reutilizar el sistema para arco y flecha. [EN PROGRESO]
+3. Conectar arco/equipamiento con municion, consumo de flechas, disparo, impactos, recogida/recarga y animaciones.
+4. Bloquear fijado de objetivos ocultos por paredes y quitar el seguimiento automatico de amenazas. [PARCIAL]
+5. Evitar que los enemigos inicien o acierten ataques contra el jugador a traves de paredes. [PARCIAL]
+
+Prioridad P1 - campamento y personajes
+6. Terminar suelo de barro para todo el asentamiento, con huellas/caminos y superficies de interior coherentes.
+7. Unificar el rig de NPCs con proporciones, cara, brazos, manos, piernas y animaciones legibles; ampliar rutinas autonomas sin que atraviesen obstaculos.
+8. Completar interacciones: control consistente, dialogos Nairu con traduccion, murmullos contextuales y evitar que se repitan cada vez que cambia el NPC cercano.
+9. Validar las tiendas de remedios y armas de principio a fin: comprar, inventario, equipar y usar cada item.
+
+Prioridad P2 - presentacion y recorrido
+10. Ajustar camara de tercera persona y probarla en bosque, campamento, interiores, combate y apuntado.
+11. Terminar la casa familiar y la cinematica: puesta en escena, dialogo, controles, encuadre y lectura en movil/escritorio.
+12. Revisar continuidad y objetivos para que la historia ensene el mundo mediante acciones, NPCs y misiones, no solo exposicion.
+13. Auditar audio del bosque: confirmar tambores, volumen, transiciones y que el audio se desbloquee/reproduzca en el navegador.
+
+Prioridad P3 - cierre y entrega
+14. Jugar la ruta de inicio completa y verificar colisiones, dash, compras, arco, dialogos, misiones, guardado y transiciones.
+15. Corregir defectos encontrados, sincronizar los archivos de vercel-static con la version principal y actualizar este estado con ------ LISTO solo despues de verificar cada criterio.
+
+
+
+------------
+
+QUE NO SE PUEDA FIJAR SI TIENE PARED EN MEDIO NO PUEDE ESTAR ASI OKEY ? AYUDAME CON ESO Y TAMBIEN QUEIRO QUE LA CAMARA ESTE MAS CERCA DEL PERSONAJE MAS CERCA PORFA.
+
+QUIERO MAS DETALLE EN EL PERSONAJE QUIERO QUE SE PAREZCA MAS AL DE "EDITOR DE PERSONAJKES" PIENSO QUE ESE ESTA MEJKOR EN LAS ANIMACIONES, PUEDE SESFORZARTE MAS PORFA ?
+
+QUIERO MAS ESTRCUTRAS CON MAS DETALLES Y MAYOR INTELIGENCIAS EN LAS TRIBUS PARA PELEAR PORFA QUE SEAMN REFLEJOS DE EL JUGADRO PERO SOLO CON ARMAS, COMO LANZAS, ARCOZ Y FLECHAS PORFA Y ARMADURAS SOLO ROPA DE TRUBI PORFA
+
+
+QUITA EL AUTO FIJAR NO QUIERO PASAR POR EL LADO DE ALGO Y QUE LA CAMARA SE DESVIE ESO EMBRUTECE LA JUGABILIDAD.
+
+EL DASH DEBE PODER USARLO DESDE QUE INICA PORFA
+
+
+
+
+REGISTRO DE TRABAJO
+- 19-10-2026: dialogo inicial reducido a un maximo de 540 px; glifos Nairu reducidos a 230 x 28 px en style.css. Diagnosticos CSS: sin errores.
+- 19-10-2026: conectado el boton APUNTAR para espada; muestra reticula, trayectoria balistica y potencia, y usa la camara para el lanzamiento. node --check app.js: correcto. Pendiente: prueba visual en navegador, obstaculos con altura y arco/flechas.
+- 19-10-2026: el fijado manual exige linea de vision; en el bosque consulta los colliders de estructuras, se desactivo el giro automatico hacia amenazas y se redujo la distancia de camara en `app.js`. Diagnosticos: sin errores. Pendiente: probar objetivos ocultos por paredes/cercas, retargeting y camara durante combate; `vercel-static` sigue desfasado.
+- 19-10-2026: la percepcion de la IA exige linea de vision antes de perseguir o iniciar ataques; `damagePlayer` vuelve a validar la vision al aplicar el impacto para que una pared cancele golpes y areas ya iniciados. Pruebas aisladas en navegador: Escupidora de Espinas no inicio ataque con pared entre ambos y comenzo `needle` al despejar la vision; Duende del Liquen no inicio `claw` detras de la pared y lo inicio al quedar visible. Diagnosticos sin errores; almacenamiento temporal borrado. Estado PARCIAL: faltan areas, otros proyectiles y otros tipos de enemigos con paredes/cercas.
+
+DETALLE DETECTADO EN EL PROYECTO
+Esto registra lo que existe en el codigo ahora; no significa que el flujo completo ya haya pasado una prueba jugando.
+
+1. Bosque, estructuras y colisiones
+- El jugador consulta los colliders del bosque al moverse y los proyectiles de espada muestrean el trayecto para detectar obstaculos.
+- Las chozas tienen colliders para paredes laterales, parte trasera y paredes frontales; las puertas quedan abiertas para entrar.
+- La prueba de proyectil actual comprueba posiciones X/Z y no la altura real. Por eso puede bloquear una flecha que pasa por encima o dejar pasar un tiro que visualmente choca con una pared alta.
+- Hay que revisar paredes, cercas, postes, portones, tuneles y puertas abiertas. El movimiento de NPC/enemigos no queda cubierto solo por el collider usado por el jugador.
+- Criterio de cierre: el jugador y personajes controlados por IA no atraviesan paredes; un disparo se detiene al impactar una superficie solida, pero atraviesa una puerta abierta; salto y dash no permiten cruzar la pared.
+
+2. Campamento, vivienda, personajes y dialogos
+- Existe una introduccion con cuatro intervenciones entre Madre y Kaelen, texto traducido, frase Nairu y cambio de encuadre. El mundo inicia en el campamento.
+- La casa familiar tiene suelo, paredes laterales y trasera, abertura frontal, viga, estera, techo a dos aguas y ocultacion del techo al acercarse. La choza no es todavia un interior grande y explorable con recorrido verificado.
+- El campamento tiene una mancha de barro principal y parches de barro; no se debe asumir que todo el terreno tribal esta cubierto ni que los senderos de barro conectan todas las instalaciones.
+- Los datos describen 150 residentes, 25 hogares y varios oficios, pero los datos poblacionales no equivalen a 150 NPCs visibles. En la escena hay caminantes visibles limitados, con ruta sinusoidal predefinida; no es todavia una simulacion poblacional de oficios.
+- Al entrar en proximidad de un NPC del bosque, se reproduce un murmullo generico y puede mostrarse su frase Nairu con traduccion. Al interactuar se abre el panel NPC. Verificar que los NPC de la aldea tengan idioma y traduccion, no solo los vendedores.
+- La madre y el joven guardian tienen modelos de cuerpo y amuleto; hay que completar y comparar rostro, manos, articulaciones, proporciones y ciclo de animacion de todos los NPC.
+- Criterio de cierre: recorrer la zona sin atravesar estructuras; observar varias rutinas distintas; hablar con NPC usando el control configurado; confirmar frase Nairu/traduccion sin spam y animaciones sin deslizarse ni atravesar paredes.
+
+3. Dash
+- La habilidad se asigna al personaje inicial y a la ranura rapida; usa `F` y el boton tactil. Tiene coste, enfriamiento, invulnerabilidad breve y animacion.
+- Criterio de cierre: comprobarlo en partida nueva desde el primer control, con y sin direccion, durante salto, con aguante/maná bajos y junto a obstaculos.
+
+4. Sonido del bosque
+- AudioManager crea una secuencia musical procedural; al estar en el bosque agrega dos golpes sintetizados de tambor por compas y sonidos de aves. La capa de sonido depende del audio desbloqueado por el navegador.
+- Esto no es una grabacion de tambores y su mezcla/volumen aun no esta validada auditivamente.
+- Criterio de cierre: iniciar partida, habilitar audio, entrar/salir del bosque y escuchar que el tema entra/sale suavemente, no se duplica y deja audibles dialogos/efectos.
+
+5. Tiendas, equipo y armas
+- Luma vende unguento de savia, infusion de raiz y caldo de marea; Taru ofrece espada de hierro, lanza de fresno, arco de costa y flecha de rafia.
+- El catalogo contiene el arco, la municion y efectos de consumibles. La escena visual del jugador contempla lanza y arco.
+- La accion conectada actualmente clona y lanza la espada equipada. No se encontro un flujo equivalente que consuma flechas, cree un proyectil de arco y aplique impactos; el arco en catalogo/modelo no prueba que sea utilizable.
+- Criterio de cierre: comprar cada articulo, revisar inventario/equipamiento, verificar modelo correcto, gastar municion al disparar, acertar/fallar, colisionar con escenario y recoger/recargar donde corresponda.
+
+5.1 Camara, apuntado y progreso
+- La camara usa seguimiento y encuadre dinamicos, pero el encuadre actual de exploracion usa una separacion aproximada de 8 m en Z; falta decidir y probar la distancia solicitada en cada zona.
+- La interfaz ya incluye boton APUNTAR y reticula. La nueva vista previa y el listener estan conectados para espada, con potencia y lanzamiento segun la camara; aun falta comprobar visualmente trayectoria, carga, obstaculos y uso real en navegador.
+- El lanzamiento antiguo usa direccion frontal y velocidad fija; el apuntado nuevo debe cubrir la altura, el tiempo de vuelo, la fuerza visible, las colisiones y la compatibilidad movil/control.
+- Hay misiones principales, personajes y mensajes de diario. Falta auditar el recorrido completo para asegurar que explica motivaciones, lugares, objetivos y consecuencias sin perder al jugador.
+- Criterio de cierre: mirar/apuntar, cambiar fuerza, ver la trayectoria real coincidir con el lanzamiento y bloquearla con paredes; completar el primer arco narrativo sin objetivos ambiguos.
+
+ORDEN DE PRUEBA PARA CADA ENTREGA
+1. Partida nueva: cinematica, lectura en movil/escritorio, control inicial y dash.
+2. Campamento: barro, casa, colisiones, vendedores, dialogos, Nairu y rutinas NPC.
+3. Bosque: audio, combate, lanzamiento/apuntado, impactos y colisiones verticales.
+4. Guardar, recargar y comprobar inventario, equipo, progreso y transiciones.
+5. Actualizar cada punto a `------ LISTO` solo despues de cumplir su criterio; mantener `[PARCIAL]` cuando falte una parte o la prueba.

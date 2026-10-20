@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101714">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Otra Era</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=IM+Fell+English&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20261018-1">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script type="module" src="app.js?v=20261018-1"></script>
+</head>
+<body>
+  <div id="game-world" aria-hidden="true"></div>
+
+  <main id="menu-shell">
+    <section id="screen-home" class="screen active" aria-label="Menú inicial">
+      <div class="home-content">
+        <div class="version-badge">V.1.1.5</div>
+        <h1 class="era-wordmark" aria-label="Otra Era"><span class="era-wordmark__o">O</span><span>TRA ERA</span></h1>
+        <p class="subtitle">La señal de la Quietud</p>
+        <button class="main-button" id="start-button">NUEVA PARTIDA</button>
+        <button class="text-button" id="home-options">OPCIONES</button>
+      </div>
+    </section>
+
+    <section id="screen-tutorial-choice" class="screen" aria-label="Entrenamiento opcional">
+      <div class="main-content session-content">
+        <h2>Antes de partir</h2>
+        <p class="subtitle">¿Quieres entrenar los controles antes de comenzar la historia?</p>
+        <div class="main-actions">
+          <button class="main-button" id="tutorial-choice-yes" type="button">SÍ, ENTRENAR</button>
+          <button class="main-button" id="tutorial-choice-no" type="button">NO, IR A LA AVENTURA</button>
+        </div>
+        <button class="back-button" id="tutorial-choice-back" type="button">VOLVER</button>
+      </div>
+    </section>
+
+    <section id="screen-character-editor" class="screen" aria-label="Personalización del personaje">
+      <iframe id="character-editor-frame" title="Editor del personaje principal"></iframe>
+      <button class="back-button" id="character-editor-back" type="button">VOLVER</button>
+    </section>
+
+    <section id="screen-profiles" class="screen" aria-label="Selección de perfil">
+      <div class="profile-content">
+        <h2>Selecciona tu perfil</h2>
+        <div id="profile-area"></div>
+        <button class="back-button" id="profiles-back">VOLVER</button>
+      </div>
+    </section>
+
+    <section id="screen-main" class="screen" aria-label="Menú principal">
+      <div id="active-profile"></div>
+      <div class="main-content">
+          <h1 class="era-wordmark" aria-label="Otra Era"><span class="era-wordmark__o">O</span><span>TRA ERA</span></h1>
+          <p class="subtitle">La señal de la Quietud</p>
+        <div class="main-actions">
+          <button class="main-button" id="new-game-button">NUEVO JUEGO</button>
+          <button class="main-button" id="continue-button">CONTINUAR</button>
+          <button class="main-button training-entry-button" id="training-entry-button">CAMPO DE ENTRENAMIENTO</button>
+          <button class="main-button" id="arena-button" type="button">ARENA</button>
+          <button class="main-button" id="main-bestiary-button" type="button">BESTIARIO</button>
+          <button class="main-button" data-message="Próximamente: opciones">OPCIONES</button>
+        </div>
+        <button class="change-profile" id="change-profile">CAMBIAR PERFIL</button>
+      </div>
+    </section>
+      <section id="screen-bestiary" class="screen" aria-label="Bestiario">
+        <div class="bestiary-screen">
+          <header class="bestiary-heading"><div><p class="bestiary-kicker">ARCHIVO DE CAMPO · OTRA ERA</p><h2>Bestiario</h2><p id="bestiary-progress">0 criaturas descubiertas</p></div><button id="bestiary-back" class="bestiary-back" type="button" aria-label="Volver">×</button></header>
+          <div id="bestiary-grid" class="bestiary-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+    <section id="screen-mode-select" class="screen" aria-label="Tipo de partida">
+      <div class="main-content session-content">
+        <h2>Tipo de partida</h2>
+        <p class="subtitle">Elige cómo quieres jugar</p>
+        <div class="main-actions">
+          <button class="main-button" id="solo-mode-button" type="button">SOLO</button>
+          <button class="main-button" id="multiplayer-mode-button" type="button">MULTIJUGADOR</button>
+        </div>
+        <button class="back-button" id="mode-back-button" type="button">VOLVER</button>
+      </div>
+    </section>
+    <section id="screen-multiplayer-menu" class="screen" aria-label="Menú multijugador">
+      <div class="main-content session-content">
+        <h2>Multijugador</h2>
+        <p class="subtitle">Crea una sala o únete a una partida</p>
+        <div class="main-actions">
+          <button class="main-button" id="create-lobby-button" type="button">CREAR PARTIDA</button>
+          <button class="main-button" id="join-lobby-button" type="button">UNIRSE A PARTIDA</button>
+        </div>
+        <button class="back-button" id="multiplayer-back-button" type="button">VOLVER</button>
+      </div>
+    </section>
+    <section id="screen-create-lobby" class="screen" aria-label="Crear partida">
+      <form id="create-lobby-form" class="session-form">
+        <h2>Crear partida</h2>
+        <label for="lobby-player-name">Nombre de jugador</label>
+        <input id="lobby-player-name" type="text" maxlength="24" autocomplete="nickname" required>
+        <label for="lobby-name">Nombre de la partida</label>
+        <input id="lobby-name" type="text" maxlength="32" autocomplete="off" required>
+        <p id="lobby-form-error" aria-live="polite"></p>
+        <button class="primary-create" type="submit">CREAR Y JUGAR</button>
+        <button class="back-button" id="create-lobby-back-button" type="button">VOLVER</button>
+      </form>
+    </section>
+    <section id="screen-join-lobby" class="screen" aria-label="Unirse a una partida">
+      <div class="lobby-content">
+        <h2>Partidas disponibles</h2>
+        <label for="join-player-name">Nombre de jugador</label>
+        <input id="join-player-name" type="text" maxlength="24" autocomplete="nickname" required>
+        <label for="lobby-search">Buscar partida</label>
+        <input id="lobby-search" type="search" placeholder="Nombre de la partida..." autocomplete="off">
+        <p id="lobby-list-state" role="status" aria-live="polite">Conectando al servidor...</p>
+        <div id="lobby-list" class="lobby-list"></div>
+        <div class="lobby-list-actions">
+          <button class="main-button" id="refresh-lobbies-button" type="button">ACTUALIZAR</button>
+          <button class="back-button" id="join-lobby-back-button" type="button">VOLVER</button>
+        </div>
+      </div>
+    </section>
+    <section id="screen-chapter" class="screen" aria-label="Introducción del capítulo">
+      <div class="chapter-content">
+        <p class="chapter-kicker" id="chapter-kicker">CAPÍTULO I</p>
+        <h2 id="chapter-title">La voz entre mareas</h2>
+        <div id="story-window"><div class="chapter-copy" id="story-copy">
+          <p>Kaelen despierta junto a la choza familiar, entre las casas de madera y tejido del campamento. Su madre ya está despierta; la Piedra del Alma descansa sobre su pecho.</p>
+          <p>Durante la noche llegó una señal desde Walpira. Glemier espera noticias al otro lado de la Puerta Norte, y su madre le pide volver antes de que cambie el camino.</p>
+          <p>Kaelen se ajusta la túnica y la faja tejidas, se despide de su madre y sale al sendero que lleva a Walpira.</p>
+        </div></div>
+        <button class="main-button" id="begin-adventure">COMENZAR AVENTURA</button>
+      </div>
+    </section>
+
+    <section id="screen-gameplay" class="screen" aria-label="Aventura">
+      <div class="game-hud">
+        <div class="hud-left">
+          <div class="hud-chapter"><span id="hud-profile"></span></div>
+          <div class="hud-stamina resource-label">AGUANTE <span class="resource-track stamina-track" role="progressbar" aria-label="Aguante" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="stamina-fill"></span></span></div>
+          <div class="resource-row"><div class="resource-label">VIDA <span class="resource-tracks"><span class="health-track"><span></span></span><span class="invulnerability-track"><span></span></span></span></div><div class="resource-label">MANÁ <span class="resource-track mana-track" role="progressbar" aria-label="Maná" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="mana-fill"></span></span></div></div>
+        </div>
+        <button id="lock-target-toggle" class="lock-target-toggle" type="button" aria-label="Fijar objetivo" aria-pressed="false"><span aria-hidden="true">◎</span><span id="lock-target-label">FIJAR</span><kbd>Q</kbd></button>
+        <div class="hud-level">NIVEL <span id="hud-level">1</span></div>
+      </div>
+      <aside id="main-quest-hud" aria-live="polite" hidden>
+        <span id="main-quest-chapter">CAPÍTULO I · HISTORIA PRINCIPAL</span>
+        <strong id="main-quest-title"></strong>
+        <p id="main-quest-objective"></p>
+      </aside>
+      <button id="companion-rescue-button" class="story-interaction-button" type="button" hidden>RESCATAR A LA CRÍA</button>
+      <section id="cinematic-overlay" role="dialog" aria-modal="true" aria-labelledby="cinematic-title" aria-describedby="cinematic-line" hidden>
+        <div class="cinematic-frame">
+          <p id="cinematic-kicker">OTRA ERA · 3500 d. C.</p>
+          <h2 id="cinematic-title"></h2>
+          <p id="cinematic-scene"></p>
+          <div id="cinematic-native" class="nairu-script-row" aria-label="Diálogo en Nairu"></div>
+          <div class="cinematic-dialogue"><strong id="cinematic-speaker"></strong><p id="cinematic-line"></p></div>
+          <div class="cinematic-actions"><button id="cinematic-skip" type="button">OMITIR</button><button id="cinematic-next" type="button">CONTINUAR</button></div>
+        </div>
+      </section>
+      <div id="multiplayer-status" role="status" aria-live="polite">MULTIJUGADOR DESCONECTADO</div>
+      <aside id="forest-navigation" aria-label="Navegación del Bosque de los Lamentos" hidden>
+        <div class="forest-nav-heading"><b>BOSQUE</b><span id="forest-coordinate">0, 0</span></div>
+        <canvas id="forest-minimap" width="180" height="180" aria-label="Minimapa del bosque"></canvas>
+        <div class="forest-nav-footer"><canvas id="forest-compass" width="72" height="72" aria-label="Brújula"></canvas><button id="forest-map-open" type="button">MAPA</button></div>
+      </aside>
+      <section id="forest-map-overlay" role="dialog" aria-modal="true" aria-labelledby="forest-map-title" hidden>
+        <div class="forest-map-frame"><header><div><span>WALPIRA · FRONTERA NORTE</span><h2 id="forest-map-title">Bosque de los Lamentos</h2></div><button id="forest-map-close" type="button" aria-label="Cerrar mapa">×</button></header><canvas id="forest-full-map" width="720" height="540" aria-label="Mapa completo del bosque"></canvas><p>La Puerta Norte queda al sur · La flecha marca tu posición y rumbo</p></div>
+      </section>
+      <aside id="exterior-navigation" aria-label="Navegación de El Exterior" hidden>
+        <div class="forest-nav-heading"><b>EL EXTERIOR</b><span id="exterior-coordinate">0, 0</span></div>
+        <canvas id="exterior-minimap" width="180" height="180" aria-label="Minimapa de El Exterior"></canvas>
+        <div class="forest-nav-footer"><span class="villa-map-key"><i></i> Tú</span><button id="exterior-map-open" type="button">MAPA</button></div>
+      </aside>
+      <section id="exterior-map-overlay" role="dialog" aria-modal="true" aria-labelledby="exterior-map-title" hidden>
+        <div class="forest-map-frame"><header><div><span>OTRA ERA · COSTA DESHABITADA</span><h2 id="exterior-map-title">El Exterior</h2></div><button id="exterior-map-close" type="button" aria-label="Cerrar mapa">×</button></header><canvas id="exterior-full-map" width="720" height="540" aria-label="Mapa completo de El Exterior"></canvas><p>La ruta de vuelta queda al sur · El mapa se completa al explorar</p></div>
+      </section>
+      <aside id="villa-navigation" aria-label="Navegación de Walpira" hidden>
+        <div class="forest-nav-heading"><b>WALPIRA</b><span id="villa-coordinate">X 0 · Z 0</span></div>
+        <canvas id="villa-minimap" width="180" height="180" aria-label="Minimapa de Walpira"></canvas>
+        <div class="forest-nav-footer"><span class="villa-map-key"><i></i> Tú</span><button id="villa-map-open" type="button">MAPA</button></div>
+      </aside>
+      <section id="villa-map-overlay" role="dialog" aria-modal="true" aria-labelledby="villa-map-title" hidden>
+        <div class="forest-map-frame"><header><div><span>WALPIRA · TERRITORIOS</span><h2 id="villa-map-title">Mapa de Walpira</h2></div><div class="villa-map-controls"><button id="villa-map-zoom-out" class="map-tool" type="button" aria-label="Alejar mapa" title="Alejar">−</button><button id="villa-map-zoom-in" class="map-tool" type="button" aria-label="Acercar mapa" title="Acercar">+</button><button id="villa-map-reset" class="map-tool" type="button" aria-label="Restablecer mapa" title="Restablecer">◎</button><button id="villa-map-close" class="map-close" type="button" aria-label="Cerrar mapa" title="Cerrar">×</button></div></header><canvas id="villa-full-map" width="720" height="540" aria-label="Mapa completo de Walpira"></canvas><p>Calles, puertas y lugares de interés · La flecha marca tu posición y rumbo</p></div>
+      </section>
+      <div id="locked-enemy-hud" aria-live="polite" hidden>
+        <img id="locked-enemy-portrait" alt="Retrato del enemigo fijado">
+        <div class="locked-enemy-info"><div class="locked-enemy-title"><strong id="locked-enemy-name">Sombra Carmesí</strong><span>NIVEL <b id="locked-enemy-level">3</b></span></div><div class="locked-enemy-meta"><b id="locked-enemy-kind">Enemigo</b><span id="locked-enemy-detail">Hostil</span></div><div class="locked-enemy-health"><span id="locked-enemy-health-fill"></span></div><small id="locked-enemy-health-copy"><span id="locked-enemy-health-value">100</span> / <span id="locked-enemy-health-max">100</span> PV</small></div>
+      </div>
+      <div id="combat-streak" aria-live="polite" aria-label="Racha de golpes"><span>RACHA</span><b id="combo-streak-count">0</b></div>
+      <div id="impulse-meter" role="status" aria-label="Impulso de movimiento: 0 por ciento"><div><span>IMPULSO</span><b id="impulse-value">0%</b></div><i><span id="impulse-fill"></span></i></div>
+      <div id="combat-hit-feedback" aria-hidden="true"></div>
+      <div id="aim-overlay" hidden aria-hidden="true"><div id="aim-reticle"><span></span></div><small id="aim-force-label">POTENCIA 0%</small></div>
+      <div id="arpg-ui">
+        <div class="quick-menu">
+          <button id="quick-menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">▶</button>
+          <nav id="quick-menu-items" aria-label="Menú del personaje">
+            <button type="button" data-panel="inventory"><span>🎒</span> Mochila <kbd>I / B</kbd></button>
+            <button type="button" data-panel="character"><span>👤</span> Personaje <kbd>C</kbd></button>
+            <button type="button" data-panel="skills"><span>⚔️</span> Habilidades <kbd>K</kbd></button>
+            <button type="button" data-character-switch="kaelen" hidden><span>👤</span> Kaelen</button>
+            <button type="button" data-character-switch="brujo" hidden><span>✦</span> Brujo arcano</button>
+            <button type="button" data-panel="missions"><span>📖</span> Libro de misiones <kbd>J</kbd></button>
+            <button id="game-bestiary-button" type="button"><span>📖</span> Bestiario</button>
+            <button type="button" data-panel="training"><span>◎</span> Entrenamiento <kbd>T</kbd></button>
+            <button type="button" data-panel="settings"><span>⚙️</span> Configuración <kbd>Esc</kbd></button>
+          </nav>
+        </div>
+        <div id="arpg-backdrop" aria-hidden="true">
+          <section class="arpg-window" id="window-inventory" role="dialog" aria-modal="true" aria-labelledby="inventory-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">TESOROS Y EQUIPO</p><h2 id="inventory-title">Mochila</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <div class="inventory-summary"><span>Oro <b id="gold-value">0 GP</b></span><span>Peso <b id="weight-value">0 / 0 kg</b></span></div>
+            <div class="weight-track"><span id="weight-fill"></span></div>
+            <div class="inventory-layout"><section><h3>Equipamiento</h3><div id="equipment-grid" class="equipment-grid"></div></section><section><h3>Mochila</h3><div id="backpack-grid" class="backpack-grid"></div><p class="inventory-hint">Selecciona un objeto para equiparlo o ver sus detalles.</p></section></div>
+            <div id="inventory-tooltip" role="status" hidden></div>
+          </section>
+          <section class="arpg-window" id="window-character" role="dialog" aria-modal="true" aria-labelledby="character-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">HOJA DEL HÉROE</p><h2 id="character-title">Personaje</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <div id="character-sheet"></div>
+          </section>
+          <section class="arpg-window" id="window-skills" role="dialog" aria-modal="true" aria-labelledby="skills-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">DISCIPLINA Y TÉCNICA</p><h2 id="skills-title">Habilidades</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <div class="skill-points">Puntos de habilidad <b id="skill-points">0</b></div>
+            <h3 class="skill-category">Pasivas</h3><div id="passive-skills" class="skill-grid"></div>
+            <h3 class="skill-category">Activas</h3><div id="active-skills" class="skill-grid"></div>
+          </section>
+          <section class="arpg-window" id="window-missions" role="dialog" aria-modal="true" aria-labelledby="missions-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">DIARIO DE CAMPAÑA</p><h2 id="missions-title">Libro de misiones</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <section class="journal-current"><span id="journal-chapter">CAPÍTULO I</span><h3 id="journal-quest-title"></h3><p id="journal-quest-objective"></p><small id="journal-quest-progress"></small></section>
+            <h3 class="skill-category">Misiones de la campaña</h3><ol id="accepted-missions" class="mission-list" aria-live="polite"></ol>
+            <h3 class="skill-category">Registro personal</h3><ol id="mission-journal-list" aria-live="polite"></ol>
+          </section>
+          <section class="arpg-window training-window" id="window-training" role="dialog" aria-modal="true" aria-labelledby="training-window-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">CAMPO DE ENTRENAMIENTO</p><h2 id="training-window-title">Práctica de combate</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <p class="training-panel-copy">Practica en el patio protegido. Tu salud, equipo y progreso no se guardan ni se pierden.</p>
+            <label class="training-setting">Lección<select id="training-lesson-select"></select></label>
+            <label class="training-setting">Conducta del rival<select id="training-ai-mode"><option value="passive">Pasivo</option><option value="defensive">Defensivo</option><option value="controlled">Ofensivo controlado</option><option value="reactive">Reactivo</option><option value="demonstration">Demostración</option></select></label>
+            <div class="training-toggles"><label><input id="training-help-toggle" type="checkbox" checked> Ayudas visuales</label><label><input id="training-debug-toggle" type="checkbox"> Diagnóstico</label></div>
+            <div class="training-panel-actions"><button type="button" id="training-start-button" class="arpg-action-button primary">Iniciar práctica</button><button type="button" id="training-exit-button" class="arpg-action-button">Salir del entrenamiento</button></div>
+          </section>
+          <section class="arpg-window settings-window" id="window-settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker">AJUSTES DE JUEGO</p><h2 id="settings-title">Configuración</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <label class="setting-range"><span>Música <output id="music-volume-value">70%</output></span><input id="music-volume" type="range" min="0" max="100" value="70"></label>
+            <label class="setting-range"><span>Efectos de sonido <output id="sfx-volume-value">80%</output></span><input id="sfx-volume" type="range" min="0" max="100" value="80"></label>
+            <label class="setting-range"><span>Iglesias dentro del radio <output id="temple-count-value">2 / 2</output></span><input id="temple-count" type="range" min="1" max="2" step="1" value="2" aria-label="Cantidad de iglesias renderizadas, mínimo una"></label>
+            <label class="setting-range"><span>Distancia visible <output id="view-distance-value">20 m</output></span><input id="view-distance" type="range" min="20" max="80" step="5" value="20"></label>
+            <label class="setting-range"><span>Resolución de renderizado <output id="resolution-scale-value">50%</output></span><input id="resolution-scale" type="range" min="40" max="100" step="10" value="50"></label>
+            <label class="setting-toggle"><span>Sombras</span><input id="shadows-toggle" type="checkbox"></label>
+            <div class="settings-actions"><button type="button" id="pause-game-button" class="arpg-action-button">Pausar juego</button><button type="button" id="save-game-button" class="arpg-action-button primary">Guardar partida</button><button type="button" id="return-to-main-menu-button" class="arpg-action-button">Guardar y volver al menú</button><button type="button" id="leave-session-button" class="arpg-action-button">Salir de la partida</button><button type="button" id="close-lobby-button" class="arpg-action-button">Cerrar partida multijugador</button></div>
+          </section>
+          <section class="arpg-window" id="window-npc" role="dialog" aria-modal="true" aria-labelledby="npc-title" hidden>
+            <header class="arpg-window-header"><div><p class="window-kicker" id="npc-kicker">COMERCIANTE</p><h2 id="npc-title">Mercado de Walpira</h2></div><button class="window-close" type="button" aria-label="Cerrar">×</button></header>
+            <div id="npc-content"></div>
+          </section>
+        </div>
+        <div id="pause-overlay" hidden><div><p class="window-kicker">WALPIRA</p><h2>Partida en pausa</h2><button type="button" id="resume-game-button" class="arpg-action-button primary">Reanudar</button></div></div>
+      </div>
+      <button id="interaction-prompt" type="button" hidden>Hablar</button>
+      <div id="tutorial-box" aria-live="polite" aria-hidden="true">
+        <button id="tutorial-dismiss" type="button" aria-label="Cerrar tutorial">×</button>
+        <div id="tutorial-icon">▶</div>
+        <div id="tutorial-text"></div>
+      </div>
+      <div id="orientation-lock" role="status" aria-live="polite"><div><span aria-hidden="true">↻</span><h2>Gira tu dispositivo</h2><p>Walpira solo se juega en horizontal.</p></div></div>
+      <div id="joystick-base" class="virtual-joystick" aria-label="Joystick izquierdo: movimiento">
+        <div class="joystick-ring"></div>
+        <div class="joystick-thumb"></div>
+      </div>
+      <div id="action-cluster">
+        <button id="jump-button" class="game-action jump-action" aria-label="Saltar"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span class="action-button-label">SALTAR</span></button>
+        <button id="dash-button" class="game-action dash-action" aria-label="Dash"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h14m-6-7 7 7-7 7M3 6h4M3 18h4"/></svg><span class="action-button-label">DASH</span></button>
+        <button id="heavy-button" class="game-action heavy-action" aria-label="Ataque pesado"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 19 10-10m-3-5 7 2-2 7-7-7Z"/></svg><span class="action-button-label">PESADO</span></button>
+        <button id="action-button" class="game-action attack-action" aria-label="Atacar"><span class="action-key" aria-hidden="true">A</span><span class="action-button-label">ATACAR</span></button>
+        <button id="shield-button" class="game-action shield-action" aria-label="Mantener para protegerse"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 2.5 2.5L16 9"/></svg><span class="action-button-label">ESCUDO</span></button>
+        <button id="shield-bash-button" class="game-action shield-bash-action" aria-label="Escudazo de Impulso, requiere escudo equipado" aria-keyshortcuts="V" title="Equipa un escudo en la ranura secundaria"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 3v6c0 5-3.5 8-8 11-4.5-3-8-6-8-11V5l8-3Z"/><path d="M7 12h10m-4-4 4 4-4 4"/></svg><span class="action-button-label">ESCUDAZO</span></button>
+        <button id="weapon-button" class="game-action weapon-action" aria-label="Tirar espada"><svg class="action-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 21 3m-8 0h8v8M5 5l3 3M3 10l5 1M9 3l1 5"/></svg><span class="action-button-label">TIRAR</span></button>
+        <button id="aim-button" class="game-action aim-action" type="button" aria-label="Apuntar con el arma" aria-pressed="false" title="Apuntar"><span aria-hidden="true">◎</span><span class="action-button-label">APUNTAR</span></button>
+      </div>
+      <div id="skill-dock" aria-label="Casillas de habilidades rápidas"></div>
+      <div id="weapon-prompt" role="status" aria-live="polite" hidden></div>
+      <section id="arena-hud" aria-live="polite" hidden>
+        <div class="arena-hud-copy"><span>ARENA</span><b id="arena-round-copy"></b><small id="arena-status"></small></div>
+        <button id="arena-exit-button" type="button">ABANDONAR</button>
+      </section>
+      <section id="training-hud" aria-live="polite" hidden>
+        <div class="training-hud-heading"><span class="training-kicker">PRÁCTICA SEGURA</span><b id="training-lesson-title"></b><span id="training-lesson-count"></span></div>
+        <p id="training-instruction"></p>
+        <small id="training-controls"></small>
+        <div class="training-progress-track"><span id="training-progress-fill"></span></div>
+        <p id="training-progress-copy"></p>
+        <div class="training-hud-actions"><button type="button" id="training-repeat-button">REPETIR</button><button type="button" id="training-skip-button">SALTAR</button><button type="button" id="training-continue-button" disabled>CONTINUAR</button><button type="button" id="training-pause-button">PAUSAR</button><button type="button" id="training-help-button">AYUDA</button><button type="button" id="training-hud-exit-button">SALIR</button></div>
+        <p id="training-diagnostics" hidden></p>
+      </section>
+    </section>
+  </main>
+
+  <div id="profile-modal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 id="modal-title">Nuevo Perfil</h3>
+      <form id="profile-form">
+        <input id="profile-name" type="text" maxlength="24" placeholder="Escribe tu nombre..." autocomplete="off" required>
+        <p id="form-error" aria-live="polite"></p>
+        <div class="modal-actions">
+          <button type="submit" class="create-button">Crear</button>
+          <button type="button" class="cancel-button" id="cancel-modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

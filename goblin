@@ -1,0 +1,430 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duende del Liquen - Motor Completo de Combate & IA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #080a0f;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+        .oriental-panel {
+            background: #10141e;
+            border: 2px solid #b8860b;
+            box-shadow: 0 0 15px rgba(184, 134, 11, 0.2);
+        }
+        canvas {
+            display: block;
+            background-color: #0b0e14;
+        }
+        /* Custom Scrollbar for code block */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b8860b;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-3 md:p-6 flex flex-col justify-between max-w-7xl mx-auto">
+
+    <!-- Header & Lore Banner -->
+    <header class="oriental-panel rounded-xl p-4 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 bg-emerald-950 border border-emerald-500 text-emerald-300 text-[10px] font-mono rounded uppercase tracking-wider">Enemigo Nivel 1 • Bosque de los Lamentos</span>
+                <span class="px-2.5 py-0.5 bg-amber-950 border border-amber-600 text-amber-300 text-[10px] font-mono rounded uppercase">IA con 4 Habilidades</span>
+            </div>
+            <h1 class="text-xl md:text-2xl font-bold font-cinzel text-amber-400">EL DUENDE DEL LIQUEN (LIQUEN GOBLIN)</h1>
+            <p class="text-xs text-gray-400 mt-0.5">Originario de la Corrupción del Bosque Profundo de los Susurros</p>
+        </div>
+        
+        <!-- Quick Stats Badge -->
+        <div class="flex items-center gap-3 bg-black/50 p-2.5 rounded-lg border border-amber-900/40 text-xs">
+            <div class="text-center px-2">
+                <span class="block text-gray-400 text-[10px]">SALUD</span>
+                <span class="font-bold text-red-400 font-mono">120 HP</span>
+            </div>
+            <div class="w-px h-6 bg-amber-900/50"></div>
+            <div class="text-center px-2">
+                <span class="block text-gray-400 text-[10px]">POSTURA</span>
+                <span class="font-bold text-amber-300 font-mono">BAJA (Stagger)</span>
+            </div>
+            <div class="w-px h-6 bg-amber-900/50"></div>
+            <div class="text-center px-2">
+                <span class="block text-gray-400 text-[10px]">TIPO</span>
+                <span class="font-bold text-emerald-400 font-mono">Guardián Corrupto</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Interactive Canvas & Ability Trigger Controls (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+            
+            <div class="oriental-panel rounded-xl overflow-hidden relative">
+                <!-- Status & AI Bar -->
+                <div class="bg-black/80 px-4 py-2 border-b border-amber-900/50 flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-400">Estado Duende:</span>
+                        <span id="stateDisplay" class="font-mono text-amber-300 font-bold uppercase">IDLE</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-400">IA Automática:</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="aiToggle" class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-400">Jugador:</span>
+                        <span id="playerStunDisplay" class="font-mono text-emerald-400 font-bold uppercase">LIBRE</span>
+                    </div>
+                </div>
+
+                <!-- Game Canvas -->
+                <canvas id="gameCanvas" width="700" height="400" class="w-full h-[320px] md:h-[400px]"></canvas>
+
+                <!-- Trigger Buttons for Manual Testing -->
+                <div class="p-3 bg-slate-950 border-t border-amber-900/40 flex flex-col gap-2">
+                    <div class="text-[11px] font-cinzel text-amber-300 font-bold flex justify-between items-center">
+                        <span>EJECUTAR HABILIDADES MANUALMENTE:</span>
+                        <span class="text-gray-500 font-sans font-normal">(Prueba cada poder antes de activar la IA)</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <!-- 1. Garrotazo -->
+                        <button onclick="triggerSkill('smash')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-amber-800/60 rounded flex flex-col items-center transition group">
+                            <span class="text-amber-400 text-sm font-bold">1. Garrotazo</span>
+                            <span class="text-[10px] text-gray-400 group-hover:text-amber-200">Golpe + Onda AoE</span>
+                        </button>
+
+                        <!-- 2. Embestida -->
+                        <button onclick="triggerSkill('dash')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-amber-800/60 rounded flex flex-col items-center transition group">
+                            <span class="text-amber-400 text-sm font-bold">2. Embestida</span>
+                            <span class="text-[10px] text-gray-400 group-hover:text-amber-200">Corte Veloz (Dash)</span>
+                        </button>
+
+                        <!-- 3. Invocacion Espinas (Corregido Secuencial) -->
+                        <button onclick="triggerSkill('summon')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-emerald-500/80 rounded flex flex-col items-center transition group bg-emerald-950/20">
+                            <span class="text-emerald-400 text-sm font-bold">3. Espinas 1 a 1</span>
+                            <span class="text-[10px] text-emerald-300 group-hover:text-emerald-100">Secuenciales (1,2,3)</span>
+                        </button>
+
+                        <!-- 4. Atadura Raiz (Stun 3s) -->
+                        <button onclick="triggerSkill('rootStun')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-teal-500/80 rounded flex flex-col items-center transition group bg-teal-950/20">
+                            <span class="text-teal-300 text-sm font-bold">4. Atadura Raíz</span>
+                            <span class="text-[10px] text-teal-200 group-hover:text-white">Stun 3.0 Segundos</span>
+                        </button>
+                    </div>
+
+                    <!-- Toggles & Adjustments -->
+                    <div class="flex flex-wrap justify-between items-center pt-2 border-t border-slate-800/80 gap-2 text-xs">
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-1.5 cursor-pointer text-gray-300 hover:text-white">
+                                <input type="checkbox" id="slowMoToggle" class="rounded accent-amber-500">
+                                Cam. Lenta (0.25x)
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-gray-300 hover:text-white">
+                                <input type="checkbox" id="hitboxToggle" class="rounded accent-emerald-500" checked>
+                                Ver Hitboxes
+                            </label>
+                        </div>
+                        <button onclick="resetPositions()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-gray-300 text-xs rounded border border-gray-600 transition">
+                            Reiniciar Posición
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lore & AI Behavior Explanation -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Lore Box -->
+                <div class="oriental-panel rounded-xl p-3.5 text-xs bg-amber-950/10 border-amber-800/40">
+                    <h3 class="font-cinzel text-amber-400 font-bold mb-1.5 flex items-center gap-1 text-sm">
+                        <span>🌲</span> Lore & Origen del Personaje
+                    </h3>
+                    <p class="text-gray-300 leading-relaxed text-[11px]">
+                        Nacido en las profundidades oscuras del <strong class="text-amber-200">Bosque de los Susurros</strong>, esta criatura era originalmente un espíritu guardián menor de la naturaleza. Sin embargo, la <strong class="text-emerald-400">Corrupción del Liquen Negro</strong> infestó su cuerpo de madera, sustituyendo su esencia limpia por una parásita rabia territorial. Utiliza máscaras de hueso antiguo para ocultar su rostro carcomido y bielda garrotes imbuidos con magia telúrica.
+                    </p>
+                </div>
+
+                <!-- AI Logic Rules Box -->
+                <div class="oriental-panel rounded-xl p-3.5 text-xs bg-emerald-950/10 border-emerald-800/40">
+                    <h3 class="font-cinzel text-emerald-400 font-bold mb-1.5 flex items-center gap-1 text-sm">
+                        <span>🧠</span> Reglas de IA (Comportamiento)
+                    </h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 text-[11px]">
+                        <li><strong class="text-amber-300">Rango Cercano (&lt;100px):</strong> Usa <span class="text-amber-200">Garrotazo Pesado</span> para obligar al jugador a alejarse.</li>
+                        <li><strong class="text-amber-300">Rango Medio (100-250px):</strong> Utiliza <span class="text-amber-200">Embestida</span> para acortar distancia con velocidad.</li>
+                        <li><strong class="text-amber-300">Rango Lejano (&gt;250px):</strong> Ejecuta <span class="text-emerald-300">Espinas Secuenciales</span> para alcanzar al objetivo.</li>
+                        <li><strong class="text-teal-300">Especial (Cooldown 10s):</strong> Lanza <span class="text-teal-200">Atadura de Raíz</span> si el jugador intenta huir constantemente.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Right Column: Complete Exportable Code for VS Code (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col">
+            <div class="oriental-panel rounded-xl p-4 flex flex-col h-full">
+                <div class="flex justify-between items-center mb-3 pb-2 border-b border-amber-900/40">
+                    <div>
+                        <h2 class="font-cinzel text-amber-400 font-bold text-sm">Código JS Completo para VS Code</h2>
+                        <span class="text-[10px] text-gray-400 block">Clase `DuendeLiquen` con los 4 Poderes e IA</span>
+                    </div>
+                    <button onclick="copyFullCode()" id="copyBtn" class="bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold px-3 py-1.5 rounded transition">
+                        Copiar Código
+                    </button>
+                </div>
+
+                <div class="bg-black/90 rounded border border-amber-900/30 p-3 flex-1 overflow-hidden flex flex-col">
+                    <pre class="font-mono text-[10.5px] text-emerald-400 overflow-y-auto flex-1 pr-1 leading-relaxed" id="codeText"><code>// ========================================================
+// CLASE ENTRADA ENEMIGO: DUENDE DEL LIQUEN (4 PODERES + IA)
+// Origen: El Bosque Profundo de los Susurros
+// ========================================================
+
+class DuendeLiquen {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.hp = 120;
+        this.maxHp = 120;
+        
+        // Estados: 'idle', 'smash', 'dash', 'summon', 'rootStun'
+        this.state = 'idle';
+        this.phase = 'none'; // 'anticipation', 'impact', 'recovery'
+        this.frame = 0;
+        
+        // Cooldowns de Habilidades (ms)
+        this.cooldowns = {
+            smash: 0,
+            dash: 0,
+            summon: 0,
+            rootStun: 0
+        };
+        
+        // Espinas Secuenciales Array (Power #3)
+        this.spikes = []; // Objetos: {x, y, active, timer, frame}
+        
+        // Atadura de Raiz (Power #4)
+        this.isStunActive = false;
+        this.stunTimer = 0;
+    }
+
+    // ----------------------------------------------------
+    // LÓGICA DE INTELIGENCIA ARTIFICIAL (IA DE COMBATE)
+    // ----------------------------------------------------
+    updateAI(player, deltaTime) {
+        // Actualizar cooldowns
+        for (let key in this.cooldowns) {
+            if (this.cooldowns[key] > 0) this.cooldowns[key] -= deltaTime;
+        }
+
+        if (this.state !== 'idle') return;
+
+        const dist = Math.abs(player.x - this.x);
+
+        // Prioridad 1: Atadura de Raíz si el jugador está lejos y la habilidad está lista
+        if (dist > 200 && this.cooldowns.rootStun <= 0) {
+            this.executeRootStun(player);
+            this.cooldowns.rootStun = 10000; // 10s cooldown
+            return;
+        }
+
+        // Prioridad 2: Invocación de Espinas Secuenciales (Rango Medio/Alto)
+        if (dist > 180 && this.cooldowns.summon <= 0) {
+            this.executeSpikeSummon(player);
+            this.cooldowns.summon = 6000; // 6s cooldown
+            return;
+        }
+
+        // Prioridad 3: Embestida de Raíces (Rango Medio)
+        if (dist >= 90 && dist <= 200 && this.cooldowns.dash <= 0) {
+            this.executeDashAttack();
+            this.cooldowns.dash = 4500; // 4.5s cooldown
+            return;
+        }
+
+        // Prioridad 4: Garrotazo Pesado (Rango Corto)
+        if (dist < 90 && this.cooldowns.smash <= 0) {
+            this.executeHeavySmash();
+            this.cooldowns.smash = 3000; // 3s cooldown
+            return;
+        }
+
+        // Movimiento básico de aproximación si no hay habilidades
+        if (dist > 60) {
+            this.x += (player.x > this.x ? 1 : -1) * 1.2;
+        }
+    }
+
+    // ----------------------------------------------------
+    // HABILIDAD 1: GARROTAZO PESADO
+    // ----------------------------------------------------
+    executeHeavySmash() {
+        this.state = 'smash';
+        this.phase = 'anticipation';
+        this.frame = 0;
+    }
+
+    // ----------------------------------------------------
+    // HABILIDAD 2: EMBESTIDA DE RAÍCES
+    // ----------------------------------------------------
+    executeDashAttack() {
+        this.state = 'dash';
+        this.phase = 'anticipation';
+        this.frame = 0;
+    }
+
+    // ----------------------------------------------------
+    // HABILIDAD 3: INVOCACIÓN DE ESPINAS (SECUENCIALES 1 A 1)
+    // ----------------------------------------------------
+    executeSpikeSummon(player) {
+        this.state = 'summon';
+        this.phase = 'anticipation';
+        this.frame = 0;
+        this.spikes = [];
+
+        // Generar 3 espinas hacia la posición del jugador
+        const dir = player.x > this.x ? 1 : -1;
+        for (let i = 0; i < 3; i++) {
+            this.spikes.push({
+                x: this.x + (dir * (80 + i * 70)),
+                y: 285,
+                delay: i * 18, // Salen 1 por 1 cada 18 frames
+                frame: 0,
+                active: false,
+                erupted: false
+            });
+        }
+    }
+
+    // ----------------------------------------------------
+    // HABILIDAD 4: ATADURA DE RAÍZ (STUN 3 SEGUNDOS)
+    // ----------------------------------------------------
+    executeRootStun(player) {
+        this.state = 'rootStun';
+        this.phase = 'anticipation';
+        this.frame = 0;
+        this.targetPlayer = player;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center text-xs text-gray-500 mt-4">
+        Diseñado para integración limpia en juegos 2D Canvas en Visual Studio Code.
+    </footer>
+
+    <!-- Game Engine Logic -->
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const stateDisplay = document.getElementById('stateDisplay');
+        const playerStunDisplay = document.getElementById('playerStunDisplay');
+        const slowMoToggle = document.getElementById('slowMoToggle');
+        const hitboxToggle = document.getElementById('hitboxToggle');
+        const aiToggle = document.getElementById('aiToggle');
+
+        // Particles & Screen FX
+        let particles = [];
+        let screenShake = 0;
+
+        // Duende Entity
+        const duende = {
+            x: 180,
+            y: 280,
+            state: 'idle', // idle, smash, dash, summon, rootStun
+            phase: 'none',
+            frame: 0,
+            vx: 0,
+            clubAngle: 0,
+            spikes: [] // For ability 3
+        };
+
+        // Player Target Entity
+        const playerTarget = {
+            x: 520,
+            y: 280,
+            isStunned: false,
+            stunTimeLeftMs: 0,
+            vineGrowth: 0,
+            shake: 0
+        };
+
+        let stunIntervalId = null;
+
+        function resetPositions() {
+            if (stunIntervalId) clearInterval(stunIntervalId);
+            
+            duende.x = 180;
+            duende.state = 'idle';
+            duende.phase = 'none';
+            duende.frame = 0;
+            duende.clubAngle = 0;
+            duende.spikes = [];
+
+            playerTarget.x = 520;
+            playerTarget.isStunned = false;
+            playerTarget.stunTimeLeftMs = 0;
+            playerTarget.vineGrowth = 0;
+            playerTarget.shake = 0;
+
+            particles = [];
+            updateUI();
+        }
+
+        function triggerSkill(type) {
+            if (duende.state !== 'idle') return;
+            
+            duende.state = type;
+            duende.phase = 'anticipation';
+            duende.frame = 0;
+            duende.spikes = [];
+            updateUI();
+
+            // Special Setup for Spike Summon (Sequential 1 by 1)
+            if (type === 'summon') {
+                const dir = playerTarget.x > duende.x ? 1 : -1;
+                for (let i = 0; i < 3; i++) {
+                    duende.spikes.push({
+                        x: duende.x + (dir * (80 + i * 85)),
+                        y: 285,
+                        delay: i * 22, // Delayed 1 by 1 activation
+                        frame: 0,
+                        active: false,
+                        erupted: false
+                    });
+                }
+            }
+        }
+
+        function updateUI() {
+            stateDisplay.innerText = duende.state.toUpperCase();
+            
+            if (playerTarget.isStunned) {
+                const secs = (playerTarget.stunTimeLeftMs / 1000).toFixed(1);
+                playerStunDisplay.innerText = `STUNNEADO (${secs}s

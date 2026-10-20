@@ -1,0 +1,15 @@
+{
+  "name": "walpira-multiplayer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Servidor dedicado local para Walpira",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

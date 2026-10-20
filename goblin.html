@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Duende del Liquen | Walpira</title>
+  <style>
+    :root { color-scheme: dark; --bg:#111712; --panel:#18231d; --line:#596147; --gold:#e1bd75; --text:#ede7d3; --muted:#aaa994; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:16px; background:var(--bg); color:var(--text); font-family:Georgia,'Times New Roman',serif; }
+    main { width:min(1080px,100%); margin:auto; }
+    header { display:flex; align-items:flex-end; justify-content:space-between; gap:14px; padding:4px 2px 13px; border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 5px; color:#c0c19c; font:11px monospace; letter-spacing:.1em; }
+    h1 { margin:0; color:var(--gold); font-size:clamp(23px,4vw,34px); font-weight:600; }
+    .identity { color:#c5c1ad; font-size:12px; text-align:right; }
+    .identity b { display:block; margin-bottom:4px; color:#e8dcb8; font:12px monospace; }
+    .battle { margin-top:14px; overflow:hidden; border:1px solid var(--line); background:var(--panel); }
+    .meters { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; padding:10px 14px; background:#121a15; border-bottom:1px solid #46513d; }
+    .meter-copy { display:flex; justify-content:space-between; gap:8px; margin-bottom:5px; color:#e8dcb8; font:11px monospace; }
+    .track { height:7px; overflow:hidden; border:1px solid #4d543f; background:#293127; }
+    .track span { display:block; width:100%; height:100%; background:#a64e42; transition:width 140ms linear; }
+    .track.player span { background:#718e5c; }
+    #state { min-width:104px; color:#d7cb9d; font:11px monospace; text-align:center; }
+    canvas { display:block; width:100%; height:auto; aspect-ratio:2 / 1; background:#314332; touch-action:manipulation; }
+    .actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:10px; border-top:1px solid #46513d; background:#121a15; }
+    button { min-height:48px; padding:7px 9px; border:1px solid #68704c; border-radius:3px; background:#202b22; color:#f0e5c7; font:600 12px Georgia,serif; cursor:pointer; touch-action:manipulation; }
+    button:hover { border-color:var(--gold); background:#2a3828; }
+    button:active { transform:translateY(1px); }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    button small { display:block; margin-top:4px; color:#bfc1a3; font:10px Georgia,serif; }
+    .summon { border-color:#6d8d60; } .root { border-color:#5b9990; }
+    .settings { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border-top:1px solid #354134; background:#151e18; }
+    .toggles { display:flex; flex-wrap:wrap; gap:15px; color:#c9c5af; font-size:12px; }
+    label { display:flex; align-items:center; gap:6px; cursor:pointer; }
+    input { accent-color:#c5a452; }
+    .reset { min-height:34px; padding:6px 12px; }
+    .notes { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:14px; padding:12px 2px; border-top:1px solid #3d483a; color:#c8c6b3; font-size:13px; line-height:1.5; }
+    .notes h2 { margin:0 0 5px; color:#d9c07e; font-size:14px; font-weight:600; }
+    .notes p { margin:0; }
+    @media(max-width:620px) { body{padding:10px} header{align-items:flex-start} .identity{font-size:10px} .meters{gap:8px;padding:8px} #state{min-width:72px;font-size:9px} .actions{grid-template-columns:repeat(2,minmax(0,1fr))} canvas{aspect-ratio:1.35/1} .notes{grid-template-columns:1fr;gap:10px} }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">BOSQUE DE LOS LAMENTOS · ENEMIGO NIVEL 1</p><h1>Duende del Liquen</h1></div>
+      <div class="identity"><b>GUARDIÁN CORRUPTO</b>120 HP · postura baja</div>
+    </header>
+    <section class="battle" aria-label="Demostración de combate">
+      <div class="meters">
+        <div><div class="meter-copy"><span>DUENDE</span><span id="enemy-copy">120 / 120</span></div><div class="track"><span id="enemy-bar"></span></div></div>
+        <div id="state" role="status">EN ESPERA</div>
+        <div><div class="meter-copy"><span>KAELEN</span><span id="player-copy">100 / 100</span></div><div class="track player"><span id="player-bar"></span></div></div>
+      </div>
+      <canvas id="scene" width="960" height="480" aria-label="Escena de combate del Duende del Liquen"></canvas>
+      <div class="actions" aria-label="Habilidades">
+        <button data-skill="smash" type="button">Garrotazo<small>Golpe y onda de choque</small></button>
+        <button data-skill="dash" type="button">Embestida<small>Avance veloz</small></button>
+        <button class="summon" data-skill="summon" type="button">Espinas<small>Erupción secuencial</small></button>
+        <button class="root" data-skill="rootStun" type="button">Atadura raíz<small>Aturdimiento de 3 s</small></button>
+      </div>
+      <div class="settings">
+        <div class="toggles">
+          <label><input id="ai-toggle" type="checkbox"> IA automática</label>
+          <label><input id="slow-toggle" type="checkbox"> Cámara lenta</label>
+          <label><input id="hitbox-toggle" type="checkbox"> Hitboxes</label>
+        </div>
+        <button class="reset" id="reset" type="button">Reiniciar combate</button>
+      </div>
+    </section>
+    <section class="notes">
+      <div><h2>Origen</h2><p>Un espíritu guardián menor del bosque, deformado por el liquen negro. La máscara ósea oculta un rostro de madera y raíces.</p></div>
+      <div><h2>Comportamiento</h2><p>Se acerca para golpear, carga si pierde distancia y usa espinas o raíces cuando Kaelen intenta escapar.</p></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const canvas = document.getElementById('scene');
+      const ctx = canvas.getContext('2d');
+      const stateText = document.getElementById('state');
+      const game = {
+        enemy:{x:260,hp:120,maxHp:120,facing:1,state:'idle',elapsed:0,cooldowns:{smash:0,dash:0,summon:0,rootStun:0},spikes:[],hit:false,shake:0},
+        player:{x:700,hp:100,maxHp:100,stun:0,vine:0,flash:0}, particles:[], last:0, aiTimer:0
+      };
+      const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+      function resize(){const rect=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);ctx.setTransform(canvas.width/960,0,0,canvas.height/480,0,0);}
+      function burst(x,y,color,count=12){for(let i=0;i<count;i++){const a=Math.PI*2*i/count,s=25+Math.random()*90;game.particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life:.4+Math.random()*.35,color});}}
+      function damagePlayer(amount,stun=0){const player=game.player;player.hp=Math.max(0,player.hp-amount);player.stun=Math.max(player.stun,stun);player.flash=.3;burst(player.x,310,'#d8b66c',14);}
+      function startSkill(skill){const enemy=game.enemy;if(enemy.state!=='idle'||enemy.hp<=0)return;enemy.state=skill;enemy.elapsed=0;enemy.hit=false;enemy.facing=game.player.x>=enemy.x?1:-1;const cooldown={smash:2.8,dash:4.2,summon:6,rootStun:10};enemy.cooldowns[skill]=cooldown[skill];if(skill==='summon')enemy.spikes=[0,1,2].map(i=>({x:game.player.x+enemy.facing*(65+i*48),delay:.35+i*.38,active:false,life:0,hit:false}));}
+      function update(dt){const e=game.enemy,p=game.player;Object.keys(e.cooldowns).forEach(key=>e.cooldowns[key]=Math.max(0,e.cooldowns[key]-dt));p.stun=Math.max(0,p.stun-dt);p.flash=Math.max(0,p.flash-dt);p.vine=Math.max(0,p.vine-dt*1.4);
+        if(document.getElementById('ai-toggle').checked&&e.state==='idle'&&e.hp>0){game.aiTimer-=dt;if(game.aiTimer<=0){const distance=Math.abs(p.x-e.x);if(distance>255&&e.cooldowns.rootStun<=0)startSkill('rootStun');else if(distance>185&&e.cooldowns.summon<=0)startSkill('summon');else if(distance>95&&e.cooldowns.dash<=0)startSkill('dash');else if(distance<190&&e.cooldowns.smash<=0)startSkill('smash');game.aiTimer=.32;}if(e.state==='idle'&&Math.abs(p.x-e.x)>72)e.x+=Math.sign(p.x-e.x)*70*dt;}
+        if(e.state!=='idle'){e.elapsed+=dt;const t=e.elapsed;if(e.state==='smash'){if(t>.34&&!e.hit){e.hit=true;if(Math.abs(p.x-e.x)<185)damagePlayer(15);burst(e.x+e.facing*90,390,'#d4b16b',16);}if(t>.95){e.state='idle';e.elapsed=0;}}else if(e.state==='dash'){if(t<.28)e.x+=e.facing*245*dt;if(t>.18&&!e.hit){e.hit=true;if(Math.abs(p.x-e.x)<95){damagePlayer(20,.35);p.x=clamp(p.x+e.facing*35,560,875);}}if(t>.72){e.state='idle';e.elapsed=0;}}else if(e.state==='summon'){e.spikes.forEach(s=>{s.delay-=dt;if(s.delay<=0){s.life+=dt;if(!s.active){s.active=true;burst(s.x,390,'#89a968',9);}if(s.life<.2&&Math.abs(p.x-s.x)<34&&!s.hit){s.hit=true;damagePlayer(9);}}});if(t>1.8){e.spikes=[];e.state='idle';e.elapsed=0;}}else if(e.state==='rootStun'){if(t>.48&&!e.hit){e.hit=true;if(Math.abs(p.x-e.x)<420)damagePlayer(4,3);}if(t>1.05){p.vine=0;e.state='idle';e.elapsed=0;}}}
+        e.shake=Math.max(0,e.shake-dt);game.particles=game.particles.filter(q=>q.life>0);game.particles.forEach(q=>{q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=140*dt;});
+        document.getElementById('enemy-bar').style.width=(e.hp/e.maxHp*100)+'%';document.getElementById('player-bar').style.width=(p.hp/p.maxHp*100)+'%';document.getElementById('enemy-copy').textContent=Math.ceil(e.hp)+' / '+e.maxHp;document.getElementById('player-copy').textContent=Math.ceil(p.hp)+' / '+p.maxHp;stateText.textContent=e.hp<=0?'DERROTADO':e.state==='idle'?'EN ESPERA':e.state.replace('rootStun','ATADURA RAÍZ').toUpperCase();}
+      function polygon(points,fill,stroke){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=3;ctx.stroke();}}
+      function drawGoblin(time){const e=game.enemy,x=e.x+(e.shake?Math.sin(time*80)*e.shake*9:0),d=e.facing,bob=e.state==='idle'?Math.sin(time*2.1)*3:0,charge=e.state==='smash'?Math.min(1,e.elapsed/.3):0,y=208+bob;
+        polygon([[x-48,385],[x-33,327],[x-5,326],[x+4,385]],'#49382e');polygon([[x+5,385],[x+18,326],[x+42,330],[x+55,385]],'#49382e');
+        polygon([[x-56,220],[x-31,y],[x+31,y+3],[x+50,300],[x+24,347],[x-43,337],[x-65,284]],'#506344','#27372d');
+        for(let i=0;i<11;i++){ctx.beginPath();ctx.arc(x-39+(i%4)*23,y+23+Math.floor(i/4)*19,3+i%2,0,Math.PI*2);ctx.fillStyle=i%3?'#a1ae70':'#c1b276';ctx.fill();}
+        polygon([[x-30,y+3],[x-52,y-19],[x-19,y-8]],'#b0a477','#554d3b');polygon([[x+26,y+3],[x+49,y-18],[x+19,y-8]],'#b0a477','#554d3b');
+        ctx.beginPath();ctx.ellipse(x,y,38,33,.05,0,Math.PI*2);ctx.fillStyle='#718257';ctx.fill();ctx.strokeStyle='#344437';ctx.lineWidth=4;ctx.stroke();
+        polygon([[x-31,y-12],[x-9,y-28],[x+20,y-24],[x+34,y-3],[x+25,y+17],[x-20,y+21]],'#d2c498','#6d6048');ctx.fillStyle='#292d23';ctx.fillRect(x-23,y-4,16,7);ctx.fillRect(x+8,y-4,16,7);ctx.fillStyle='#f4bb54';ctx.fillRect(x-19,y-3,7,4);ctx.fillRect(x+11,y-3,7,4);polygon([[x-12,y+11],[x+13,y+10],[x+2,y+22]],'#47392d');
+        ctx.strokeStyle='#927b4f';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x+d*31,y+30);ctx.lineTo(x+d*(68+charge*18),y-2-charge*15);ctx.stroke();polygon([[x+d*(56+charge*18),y-25-charge*15],[x+d*(77+charge*18),y-9-charge*15],[x+d*(69+charge*18),y+4-charge*15],[x+d*(49+charge*18),y-7-charge*15]],'#805b35','#3d3326');ctx.fillStyle='#e5ddc4';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('DUENDE DEL LIQUEN',x,148);}
+      function draw(time){ctx.clearRect(0,0,960,480);const sky=ctx.createLinearGradient(0,0,0,480);sky.addColorStop(0,'#314637');sky.addColorStop(.62,'#5f7049');sky.addColorStop(1,'#927b4d');ctx.fillStyle=sky;ctx.fillRect(0,0,960,480);for(let i=0;i<8;i++){const x=(i*151+30)%960;polygon([[x-48,335],[x-35,150-i%3*18],[x-11,126-i%3*18],[x+3,335]],i%2?'#26382f':'#304333');}ctx.fillStyle='#52603d';ctx.fillRect(0,386,960,94);ctx.strokeStyle='#89794f';ctx.beginPath();ctx.moveTo(0,397);ctx.quadraticCurveTo(420,379,960,398);ctx.stroke();game.enemy.spikes.forEach(s=>{if(s.active){const rise=Math.min(1,s.life/.13);polygon([[s.x-19,388],[s.x-10,388-rise*57],[s.x,388-rise*73],[s.x+13,388-rise*49],[s.x+20,388]],'#72865a','#364538');}});drawGoblin(time);const p=game.player;ctx.save();if(p.stun>0)ctx.translate(Math.sin(time*48)*5,0);ctx.fillStyle=p.flash>0?'#f0d18b':'#465c55';ctx.fillRect(p.x-17,270,34,74);ctx.fillStyle='#b3aa91';ctx.beginPath();ctx.arc(p.x,253,20,0,Math.PI*2);ctx.fill();ctx.fillStyle='#30372d';ctx.fillRect(p.x-11,249,6,5);ctx.fillRect(p.x+5,249,6,5);if(p.vine>0){ctx.strokeStyle='#76a36b';ctx.lineWidth=6;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(p.x+i*15,394);ctx.quadraticCurveTo(p.x+i*22,330,p.x+i*10,295);ctx.stroke();}}ctx.restore();ctx.fillStyle='#e5ddc4';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('KAELEN',p.x,365);if(document.getElementById('hitbox-toggle').checked){ctx.strokeStyle='#87c88a';ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(game.enemy.x,305,80,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}game.particles.forEach(q=>{ctx.globalAlpha=clamp(q.life/.35,0,1);ctx.fillStyle=q.color;ctx.fillRect(q.x,q.y,4,4);});ctx.globalAlpha=1;if(game.enemy.state==='smash'&&game.enemy.elapsed>.3){ctx.strokeStyle='#e1bd75';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(game.enemy.x+game.enemy.facing*90,389,25+game.enemy.elapsed*35,8,0,0,Math.PI*2);ctx.stroke();}}
+      function frame(now){if(!game.last)game.last=now;const slow=document.getElementById('slow-toggle').checked;const dt=Math.min((now-game.last)/1000,.04)*(slow ? 0.25 : 1);game.last=now;update(dt);draw(now/1000);requestAnimationFrame(frame);}
+      document.querySelectorAll('[data-skill]').forEach(button=>button.addEventListener('click',()=>startSkill(button.dataset.skill)));
+      document.getElementById('reset').addEventListener('click',()=>{const e=game.enemy,p=game.player;e.x=260;e.hp=e.maxHp;e.state='idle';e.elapsed=0;e.spikes=[];e.hit=false;e.cooldowns={smash:0,dash:0,summon:0,rootStun:0};p.x=700;p.hp=p.maxHp;p.stun=0;p.vine=0;game.particles=[];});
+      canvas.addEventListener('pointerdown',event=>{if(game.player.stun>0)return;const rect=canvas.getBoundingClientRect();game.player.x=clamp((event.clientX-rect.left)/rect.width*960,560,875);});
+      window.addEventListener('resize',resize);resize();requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

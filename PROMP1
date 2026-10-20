@@ -1,0 +1,379 @@
+PROMPT MAESTRO — AUDITORÍA INTEGRAL DE WALPIRA, VALIDACIÓN DE LOS CAPÍTULOS I Y II E INVESTIGACIÓN DE LA CONTINUACIÓN DE ARCUZ
+
+1. ROL Y OBJETIVO
+
+Actúa como director técnico, auditor de videojuegos RPG, diseñador narrativo, diseñador de misiones y especialista en interfaces HUD, navegación dinámica, mapas, economía, inventarios y sistemas de progresión.
+
+Trabaja directamente sobre el proyecto existente de Walpira. No reconstruyas el juego desde cero ni des por hecho que las implementaciones anteriores funcionan correctamente.
+
+El trabajo tiene dos objetivos separados:
+
+OBJETIVO A — Auditoría y finalización: verificar, corregir e integrar todos los elementos de los capítulos I y II de Walpira, garantizando que la historia principal sea coherente y que ambos capítulos puedan completarse de principio a fin.
+
+OBJETIVO B — Investigación histórica: investigar la continuación de Arcuz: Behind the Dark después del punto narrativo equivalente al final del capítulo II, incluyendo misiones principales y secundarias, para preparar una futura adaptación. Esta investigación no autoriza a implementar el capítulo III todavía.
+
+Antes de crear o modificar contenido importante, debes analizar el proyecto, documentar el estado actual y presentar un concepto y un plan justificado.
+
+2. AUDITORÍA DEL HUD Y DE LOS TÍTULOS
+
+Inspecciona todas las pantallas de juego en las que aparecen el título del capítulo, el nombre de la misión, los objetivos, las notificaciones y los indicadores de navegación.
+
+Problema que debes prevenir
+
+Los títulos y mensajes no pueden tapar:
+
+- El joystick de movimiento.
+- Los botones de ataque, salto, esquiva y habilidades.
+- Los indicadores de vida, maná, experiencia y recursos.
+- Los accesos al inventario, menú y equipamiento.
+- Los indicadores de objetivo, enemigos y misiones.
+- Cualquier control necesario para jugar.
+
+Diseño y posicionamiento
+
+Analiza la distribución real del HUD y establece zonas seguras para cada elemento.
+
+Considera colocar el título del capítulo o la misión en un área lateral, por encima del conjunto de habilidades y próxima al joystick, siempre que las dimensiones de pantalla y el diseño actual lo permitan. No fijes esa ubicación sin comprobar que no interfiera con otros elementos.
+
+Debes comprobar:
+
+- Teléfonos con diferentes resoluciones y relaciones de aspecto.
+- Orientación de pantalla utilizada por el juego.
+- Escalado y posición del HUD.
+- Distancias entre botones y paneles.
+- Mensajes que aparecen simultáneamente.
+- Apertura de inventario, mapa y otros paneles.
+- Visibilidad del protagonista y de los enemigos durante el combate.
+
+Si una notificación puede tapar controles, utiliza una posición alternativa, un tamaño más compacto, una duración limitada o una transición que no interrumpa la jugabilidad.
+
+Los títulos de capítulo deben tener presencia visual, pero no permanecer ocupando espacio innecesario durante todo el combate. Después de la presentación, el objetivo activo debe mostrarse en un panel compacto.
+
+Entrega una propuesta de distribución antes de realizar cambios importantes y explica qué problemas detectaste y cómo los resolverás.
+
+3. AUDITORÍA DE LAS MISIONES EXISTENTES
+
+Localiza todas las misiones que ya se hayan implementado o adaptado para los capítulos I y II de Walpira.
+
+No te limites a revisar una lista de nombres. Inspecciona su implementación real, sus dependencias y su funcionamiento dentro del juego.
+
+Para cada misión, documenta:
+
+- ID y nombre actual.
+- Capítulo y tipo de misión.
+- Personaje que la entrega.
+- Función narrativa de ese personaje.
+- Objetivo visible para el jugador.
+- Prerrequisitos.
+- Mapa y región donde se desarrolla.
+- Enemigos involucrados.
+- Objetos necesarios y su procedencia.
+- Condiciones de progreso.
+- Condiciones de finalización.
+- Recompensas.
+- Siguiente misión.
+- Marcadores y flechas asociados.
+- Mensajes y sonidos.
+- Estado de implementación y pruebas.
+
+Comprueba que los personajes de Walpira sean equivalentes funcionales adecuados de los personajes de referencia de Arcuz, sin copiar sus nombres ni forzar equivalencias incorrectas.
+
+Si un NPC desempeña un papel que no coincide con la función de la misión, analiza si debe reasignarse, adaptarse o sustituirse por otro personaje existente. Si hace falta un personaje nuevo, justifica su función y ubicación antes de crearlo.
+
+Diversidad de misiones
+
+Comprueba que los capítulos no consistan exclusivamente en matar enemigos repetidamente en una misma zona.
+
+Busca variedad mediante actividades que encajen con los sistemas existentes:
+
+- Comprar y equipar un arma.
+- Hablar con personajes y obtener información.
+- Combatir contra grupos de enemigos.
+- Recoger materiales.
+- Encontrar objetos especiales.
+- Fabricar, componer o mejorar equipo.
+- Investigar zonas.
+- Recuperar mercancías u objetos personales.
+- Completar desafíos opcionales.
+- Entregar objetos a personajes.
+- Derrotar enemigos especiales.
+- Desbloquear nuevas áreas.
+
+No añadas actividades solo para aumentar el número de misiones. Cada una debe tener una razón narrativa, un objetivo comprensible y una mecánica funcional.
+
+4. AUDITORÍA GEOGRÁFICA Y DISTRIBUCIÓN DEL MUNDO
+
+El mapa actual debe aprovecharse de forma lógica. Las misiones no deben agruparse arbitrariamente en una pequeña zona si existen regiones amplias que permiten distribuirlas mejor.
+
+Analiza la geografía real del mundo:
+
+- Villa inicial.
+- Caminos y salidas.
+- Bosques y zonas exteriores.
+- Áreas de combate.
+- Entradas a mazmorras.
+- Regiones de enemigos especiales.
+- Lugares asociados a misiones personales.
+- Áreas comerciales y de fabricación.
+- Puntos de transición entre mapas.
+
+Crea una matriz geográfica que relacione cada misión con su región, sus accesos, los NPC presentes, los enemigos y la razón narrativa por la que esa actividad sucede allí.
+
+Reglas de distribución
+
+1. No concentres todas las misiones en una única región.
+2. Evita desplazamientos innecesarios entre NPC y objetivos cercanos.
+3. Distribuye las misiones de manera que el jugador descubra progresivamente el mundo.
+4. Separa geográficamente las actividades que necesitan contextos diferentes.
+5. Aprovecha regiones existentes antes de proponer nuevos mapas.
+6. No coloques enemigos, objetos o NPC dentro de geometría inaccesible.
+7. Comprueba que las rutas sean transitables y que el jugador pueda llegar a todos los objetivos.
+
+Cuándo crear un mapa nuevo
+
+Si la auditoría demuestra que el mundo actual no tiene espacio adecuado para una misión, una zona de jefe o una nueva etapa narrativa, presenta primero una propuesta de mapa nuevo.
+
+La propuesta debe incluir:
+
+- Nombre original de Walpira.
+- Historia y función narrativa de la región.
+- Ubicación relativa respecto a los mapas existentes.
+- Límites y puntos cardinales coherentes.
+- Entradas, salidas y conexiones.
+- Caminos transitables.
+- NPC y enemigos que habitan la región.
+- Objetos y recursos que pueden encontrarse.
+- Misiones que se desarrollan allí.
+- Requisitos para acceder.
+- Mecanismo de transporte o transición.
+- Retorno al mundo principal.
+- Marcadores cartográficos y orientación.
+
+Si la arquitectura permite varios mapas, utiliza conexiones explícitas entre regiones. Si utiliza un único mundo continuo, adapta la propuesta a ese sistema.
+
+No inventes coordenadas ni puntos cardinales sin inspeccionar la geometría real. Documenta cómo se conecta cada región con las demás.
+
+Presenta la justificación y el diseño antes de crear el mapa. Si no hace falta uno nuevo, indícalo y utiliza las regiones existentes.
+
+5. FLECHAS GUÍA Y NAVEGACIÓN DINÁMICA
+
+Inspecciona el sistema de orientación de misiones y corrige las flechas, marcadores y objetivos que no funcionen.
+
+La navegación debe responder al estado real de la misión y a la posición actual del jugador.
+
+Debe:
+
+- Seguir al NPC o al objetivo correcto.
+- Actualizarse al cambiar de objetivo.
+- Orientarse correctamente hacia destinos en el mundo.
+- Mostrar una indicación de borde de pantalla si el objetivo queda fuera de la vista y la interfaz lo admite.
+- Utilizar el mapa para indicar regiones o destinos distantes.
+- Actualizarse cuando el jugador cambia de región.
+- Evitar apuntar a enemigos derrotados o a objetos recogidos.
+- Diferenciar la misión principal de las secundarias.
+- Respetar las zonas de seguridad del HUD.
+- Evitar interferir con los controles táctiles.
+- Recuperarse correctamente después de cargar una partida guardada.
+
+No confundas una flecha fija en pantalla con un indicador de dirección hacia un objetivo. La flecha debe calcular su dirección usando las posiciones reales del jugador y del destino, adaptándose a la cámara y al sistema de coordenadas del proyecto.
+
+Cuando el objetivo sea una zona extensa, utiliza un marcador de región o una indicación de entrada, en vez de apuntar a una ubicación arbitraria.
+
+Comprueba los casos de objetivos cercanos, objetivos lejanos, objetivos fuera de pantalla, cambios de región y objetivos completados.
+
+6. NPC, COMERCIANTES E INVENTARIOS
+
+Revisa los personajes existentes y establece qué funciones desempeña cada uno.
+
+Debes identificar quién vende:
+
+- Armas.
+- Armaduras.
+- Escudos.
+- Pociones y consumibles.
+- Materiales de fabricación.
+- Cristales y piedras de composición.
+- Objetos generales.
+- Otros artículos especiales.
+
+Verifica si existe un herrero, un alquimista, un comerciante general, un instructor y personajes relacionados con la historia.
+
+Para cada objeto requerido por una misión:
+
+1. Busca el objeto en el inventario real.
+2. Comprueba su identificador, categoría y función.
+3. Determina si puede reutilizarse.
+4. Si no existe, documenta su creación.
+5. Si lo suelta un enemigo, configura y comprueba el botín.
+6. Si se compra, verifica el comerciante, el precio y el inventario comercial.
+7. Si se fabrica, verifica los materiales y la receta.
+8. Comprueba que la misión detecte la obtención y permita la entrega.
+
+No crees artículos duplicados ni referencias a objetos inexistentes.
+
+7. AUDITORÍA DE NPC Y POSICIONAMIENTO
+
+Revisa la ubicación y orientación de todos los NPC que participan en los capítulos I y II.
+
+Asegúrate de que:
+
+- Sean visibles desde los caminos por los que llega el jugador.
+- No queden ocultos detrás de casas, árboles u otras estructuras.
+- No aparezcan dentro del terreno o fuera de las superficies transitables.
+- El jugador pueda acercarse e interactuar con ellos.
+- La flecha guía llegue al personaje correcto.
+- La orientación sea coherente con la zona de interacción.
+- Los indicadores no queden ocultos por el escenario.
+- Las tiendas y estaciones de fabricación puedan utilizarse sin interrupciones accidentales.
+
+Si un personaje necesita ser reubicado, documenta su posición anterior, la nueva ubicación y la razón del cambio. Respeta el sistema de coordenadas, rotación y navegación del proyecto.
+
+8. VERIFICACIÓN DE LOS CAPÍTULOS I Y II
+
+Construye una lista de control completa de las misiones existentes y previstas.
+
+No des por terminado un capítulo porque el texto de su misión final exista. Comprueba la cadena de progresión y todas las dependencias.
+
+Capítulo I
+
+Verifica el inicio de partida, la presentación del capítulo, la primera interacción con un NPC, la obtención y equipamiento del arma, los primeros combates, la progresión del personaje, la fabricación o composición correspondiente y la transición al capítulo II.
+
+Capítulo II
+
+Verifica las nuevas zonas, los enemigos de mayor dificultad, las misiones principales, los objetos especiales, las misiones secundarias, las entregas, las recompensas y la conclusión narrativa.
+
+Comprueba que cada misión tenga una ubicación adecuada y que los objetivos puedan cumplirse con los recursos disponibles.
+
+El cierre del capítulo II debe tener una condición de finalización explícita, un mensaje de capítulo completado y un estado persistente. No debe depender de que el jugador active manualmente un indicador que el juego nunca muestra.
+
+Tutorial opcional
+
+Comprueba que la selección de tutorial sea independiente de la historia principal:
+
+- Si el jugador acepta, entra al campo de entrenamiento y después llega a la villa.
+- Si lo rechaza, entra directamente a la villa y comienza el capítulo I.
+
+El tutorial no debe bloquear la progresión ni confundirse con una misión principal.
+
+9. CRITERIOS DE ACEPTACIÓN
+
+La auditoría de los capítulos I y II solo se considerará satisfactoria cuando:
+
+1. Todas las misiones de ambos capítulos estén inventariadas.
+2. Cada misión tenga un NPC, objetivo, ubicación y condición de finalización válidos.
+3. Las equivalencias narrativas sean coherentes.
+4. Las misiones tengan diversidad y una distribución geográfica justificada.
+5. Los objetos requeridos existan y puedan obtenerse.
+6. Los enemigos y sus tablas de botín funcionen correctamente.
+7. Los marcadores y flechas sean dinámicos.
+8. El HUD no tape controles ni indicadores importantes.
+9. Los NPC sean visibles, accesibles y estén correctamente orientados.
+10. Los mensajes, recompensas y sonidos estén conectados a los eventos reales.
+11. El progreso sobreviva al guardado y la carga.
+12. El capítulo I pueda completarse de principio a fin.
+13. El capítulo II pueda completarse de principio a fin.
+14. No existan bloqueos conocidos en la progresión.
+15. Los resultados estén probados o claramente identificados como pendientes de prueba.
+
+No afirmes que todo está garantizado si no has podido verificarlo. Informa de las limitaciones del entorno y de las pruebas que no se pudieron ejecutar.
+
+10. INVESTIGACIÓN PROFUNDA DE LA CONTINUACIÓN DE ARCUZ
+
+Este objetivo es independiente de la implementación de Walpira.
+
+Investiga qué sucede después de la última misión de Arcuz utilizada como referencia para el capítulo II de Walpira. El propósito es preparar la futura adaptación de los capítulos posteriores, incluidas las misiones secundarias.
+
+Primero: identificar la versión correcta
+
+Verifica que las fuentes correspondan al juego correcto: Arcuz: Behind the Dark, su versión original o una secuela.
+
+Existen fuentes que mezclan o separan títulos, capítulos, personajes y misiones. No combines información de Arcuz y Arcuz II sin identificar claramente su procedencia.
+
+Antes de avanzar, establece:
+
+- Título exacto.
+- Versión o edición investigada.
+- Estructura de capítulos.
+- Última misión correspondiente al punto de referencia de Walpira.
+- Diferencias relevantes entre las fuentes consultadas.
+
+Utiliza fuentes fiables, guías detalladas, listas de misiones y walkthroughs. Contrasta los datos y distingue hechos documentados de interpretaciones.
+
+Investigación de cada capítulo posterior
+
+Investiga todas las misiones principales y secundarias documentadas de los capítulos siguientes, incluyendo:
+
+- Nombre original de la misión.
+- Capítulo y orden.
+- NPC que la entrega.
+- Requisitos previos.
+- Zona donde se desarrolla.
+- Enemigos que aparecen.
+- Objetos necesarios y cómo se obtienen.
+- Secuencia de acciones.
+- Interacciones y entregas.
+- Recompensas conocidas.
+- Desbloqueos.
+- Conexión con la trama.
+- Misiones que pueden perderse o que requieren condiciones especiales.
+- Errores o particularidades de la versión investigada.
+
+Cuando una guía no indique un dato, no lo inventes. Marca la información como no confirmada.
+
+Fuentes iniciales para contrastar
+
+- Wiki de misiones de Arcuz: https://arcuz.fandom.com/wiki/Quests
+- Guía de Arcuz: https://forums.gamershood.com/free-online-offline-games/walkthroughs/17289-arcuz
+- Guía y recursos de Arcuz: https://www.arcuz.de/
+- Base de datos de misiones: https://flashgaming.fandom.com/wiki/Arcuz
+
+Utiliza estas fuentes como punto de partida, no como lista cerrada. Busca otras guías cuando sea necesario y comprueba si corresponden al título correcto.
+
+Resultado de la investigación
+
+Entrega un documento de continuación que incluya:
+
+1. Resumen narrativo de lo que ocurre después del capítulo II.
+2. Índice ordenado de los capítulos siguientes.
+3. Lista completa de misiones principales verificadas.
+4. Lista completa de misiones secundarias documentadas.
+5. Dependencias y orden de desbloqueo.
+6. Personajes y funciones narrativas.
+7. Mapas y regiones que se necesitarían en Walpira.
+8. Objetos, enemigos y sistemas nuevos.
+9. Equivalencias propuestas para el universo de Walpira.
+10. Elementos que podrían reutilizarse y elementos que tendrían que crearse.
+11. Fuentes consultadas y nivel de certeza de los datos.
+12. Propuesta de planificación futura, sin implementar todavía esos capítulos.
+
+No copies nombres, diálogos ni personajes de Arcuz como contenido definitivo de Walpira. La investigación debe servir para diseñar una continuación original.
+
+11. INFORMES Y EJECUCIÓN POR FASES
+
+Trabaja en este orden:
+
+Fase A — Auditoría: inspeccionar el juego y presentar los defectos encontrados.
+
+Fase B — Concepto: presentar el diseño propuesto para el HUD, la distribución geográfica y la corrección de las misiones.
+
+Fase C — Plan de cambios: enumerar los sistemas, personajes, objetos, mapas y misiones que deben corregirse o crearse.
+
+Fase D — Implementación: realizar las modificaciones en el proyecto existente.
+
+Fase E — Pruebas: recorrer los capítulos I y II, comprobar los objetivos y verificar el guardado.
+
+Fase F — Investigación de Arcuz: estudiar por separado la continuación y documentar las misiones posteriores.
+
+Al finalizar cada fase, informa de los cambios reales, las pruebas efectuadas, los problemas encontrados y los pendientes.
+
+No te limites a entregar recomendaciones. Ejecuta los cambios de la auditoría cuando tengas información suficiente y acceso al proyecto.
+
+INSTRUCCIÓN FINAL
+
+Comienza inspeccionando el estado actual de Walpira. Presenta primero un inventario de las misiones que realmente existen, los problemas del HUD, la distribución geográfica y las equivalencias entre personajes y objetos.
+
+Después, propone un concepto y un plan de corrección. Ejecuta y valida los cambios necesarios para garantizar los capítulos I y II.
+
+Por separado, investiga la continuación de Arcuz y entrega el índice de misiones posteriores para planificar el futuro capítulo III y los siguientes.
+
+No implementes contenido nuevo de capítulos posteriores durante esta auditoría. La prioridad absoluta es dejar los capítulos I y II coherentes, accesibles, correctamente guiados y funcionales de principio a fin.
